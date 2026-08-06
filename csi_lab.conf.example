@@ -1,0 +1,32 @@
+# csi_lab 本地配置示例
+#
+# 复制为 csi_lab.conf 后按自己的环境修改。
+# csi_lab.conf 不入库（见 .gitignore），因为它含内网拓扑信息。
+#
+#   cp csi_lab.conf.example csi_lab.conf
+#
+# 注意：节点名（node1/node2/node3）是 ~/.ssh/config 里的 Host 别名，
+# 不是主机名。见 README 的「SSH 配置」一节。
+
+# ---- 节点角色 ----
+TX_NODE=node2        # 发射端
+RX_A=node1           # 接收端 A（对齐时作参考端）
+RX_B=node3           # 接收端 B
+
+# ---- 相机 ----
+# 留空则不采深度相机（也就没有姿态真值）
+# CAM_HOST=node1
+
+# ---- 路径 ----
+RESULTS="$HOME/csi_results"
+PYTHON_BIN="$HOME/csienv/bin/python"
+
+# ---- 时序 ----
+RX_MARGIN=15         # 接收端比发射端多跑的秒数
+TX_MARGIN=5          # 覆盖 PicoScenes 启动开销
+READY_TIMEOUT=60
+CAM_READY_TIMEOUT=45
+BATCH_GAP=10         # 批量采集两组之间的准备时间
+
+# ---- 其他 ----
+NO_RESTORE=0         # 1 = 采集后不恢复 Wi-Fi

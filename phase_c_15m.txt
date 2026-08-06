@@ -1,0 +1,22 @@
+# 阶段 C 批量采集 —— 节点间距 15 m
+#
+# 用法（摆好 15 m 并记录布局之后）:
+#   cd ~/csi_lab
+#   CAM_HOST=node1 ./csi_lab.sh batch phase_c_15m.txt
+#
+# 前提:
+#   1. 相机在 node1（接收端），不在 node2。移动后先验:
+#        ssh node1 'bash ~/csi_agent.sh check-cam'
+#   2. 相机与行走区【固定不动】，只移动 node2 来改变间距。
+#      深度误差随距离平方增长，人离相机应保持在 5 m 以内。
+#   3. 本档布局已记录（坐标/草图、天线朝向、行走路径）。
+#   4. 整体预检:
+#        CAM_HOST=node1 ./csi_lab.sh check
+#
+# 跑完本档后，确认 Mac 已回收，再清理节点侧数据腾空间:
+#   ssh node1 'rm -rf ~/csi_data/*'
+#
+# trial名            秒数   重复次数
+empty_15m            30      3
+walk_link1_15m       30      3
+walk_link2_15m       30      3
