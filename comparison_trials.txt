@@ -1,0 +1,3 @@
+# trial_name duration_s repetitions
+empty 30 3
+walk 30 3

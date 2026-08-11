@@ -1,0 +1,9 @@
+{
+  "valid": true,
+  "file": "C:\\Users\\Lenovo\\Desktop\\csi_lab_improved\\integration_output\\aligned\\aligned_csi.npz",
+  "rows": 5386,
+  "data_subcarriers": 234,
+  "packet_format": "HESU",
+  "bandwidth_mhz": 20,
+  "clock_residual_p95_ns": 84097.25
+}

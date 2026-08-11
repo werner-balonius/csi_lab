@@ -1,0 +1,84 @@
+{
+  "generated_at_utc": "2026-08-07T21:29:38.084880+00:00",
+  "alignment_key": [
+    "source_mac",
+    "sequence",
+    "fragment",
+    "task_id"
+  ],
+  "tx_mac": "e0:d5:5d:4d:01:e8",
+  "node1": {
+    "file": "C:\\Users\\Lenovo\\Desktop\\node 1 CSI\\node1_walk_link1(1).csi",
+    "all_frames": 9183,
+    "target_packets": 5556,
+    "duplicate_keys": 0,
+    "system_ns_start": 1783342622669028938,
+    "system_ns_end": 1783342651339751462,
+    "utc_start": "2026-07-06T12:57:02.669029+00:00",
+    "utc_end": "2026-07-06T12:57:31.339751+00:00"
+  },
+  "node3": {
+    "file": "C:\\Users\\Lenovo\\Desktop\\node 3 CSI\\node3_walk_link1.csi",
+    "all_frames": 7507,
+    "target_packets": 5658,
+    "duplicate_keys": 0,
+    "system_ns_start": 1783342621994262997,
+    "system_ns_end": 1783342650689771388,
+    "utc_start": "2026-07-06T12:57:01.994263+00:00",
+    "utc_end": "2026-07-06T12:57:30.689771+00:00"
+  },
+  "matched_packets": 5386,
+  "node1_match_ratio": 0.9694024478041756,
+  "node3_match_ratio": 0.951926475786497,
+  "unmatched_node1": 170,
+  "unmatched_node3": 272,
+  "node3_minus_node1_system_ns_median": -4859730.5,
+  "node3_minus_node1_system_ns_mad": 150917.0,
+  "clock_model_node3_to_node1": {
+    "reference_node1_ns": 1783342622669028938,
+    "offset_ns_at_reference": -4557291.699000623,
+    "drift_ns_per_second": -21490.778071128796,
+    "drift_ppm": -21.490778071128798,
+    "sample_count": 5386,
+    "inlier_count": 5385,
+    "outlier_count": 1,
+    "residual_median_ns": -4153.884297213517,
+    "residual_mad_ns": 17669.042632776313,
+    "residual_std_ns": 37460.04904443902,
+    "residual_p95_abs_ns": 83920.1203461377,
+    "residual_max_abs_ns": 132220.79355665483
+  },
+  "node3_non_monotonic_steps": 0,
+  "warnings": [],
+  "outputs": {
+    "aligned_packets_csv": "C:\\Users\\Lenovo\\Desktop\\csi_lab_improved\\integration_output\\aligned\\aligned_packets.csv",
+    "aligned_csi_npz": "C:\\Users\\Lenovo\\Desktop\\csi_lab_improved\\integration_output\\aligned\\aligned_csi.npz"
+  },
+  "data_subcarriers": 234,
+  "pilot_subcarriers_removed": [
+    -116,
+    -90,
+    -48,
+    -22,
+    22,
+    48,
+    90,
+    116
+  ],
+  "packet_format": "HESU",
+  "bandwidth_mhz": 20,
+  "aligned_shapes": {
+    "node1": [
+      5386,
+      242,
+      2,
+      1
+    ],
+    "node3": [
+      5386,
+      242,
+      2,
+      1
+    ]
+  }
+}

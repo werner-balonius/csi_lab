@@ -14,8 +14,20 @@ RX_A=node1           # 接收端 A（对齐时作参考端）
 RX_B=node3           # 接收端 B
 
 # ---- 相机 ----
-# 留空则不采深度相机（也就没有姿态真值）
+# 留空则不采 RGB-D 参考帧；本工具不生成 3D 关节点姿态标签
 # CAM_HOST=node1
+
+# ---- CSI 实验配置（默认满足 HT20 主 CSI 要求）----
+CSI_PHY=1
+CSI_CHANNEL=2412
+CSI_BANDWIDTH=20
+CSI_PRESET=TX_CBW_20_HT
+CSI_EXPECTED_SUBCARRIERS=56
+CSI_TRAFFIC_MODE=broadcast
+# broadcast 留空即可；multicast 可设 01:00:5E:00:00:01
+CSI_TARGET_MAC=
+CSI_DELAY_US=5000
+CSI_ALLOW_CAMERA_WARNINGS=0
 
 # ---- 路径 ----
 RESULTS="$HOME/csi_results"

@@ -1,0 +1,15 @@
+{
+  "source_file": "C:\\Users\\Lenovo\\Desktop\\node 1 CSI\\node1_walk_link1(1).csi",
+  "output_file": "C:\\Users\\Lenovo\\Desktop\\csi_lab_improved\\integration_output\\node1_target_csi.npz",
+  "all_frames": 9183,
+  "selected_frames": 5556,
+  "source_mac": "e0:d5:5d:4d:01:e8",
+  "csi_segment": "CSI",
+  "packet_format": "HESU",
+  "bandwidth_mhz": 20,
+  "csi_shape_per_frame": [
+    242,
+    2,
+    1
+  ]
+}
