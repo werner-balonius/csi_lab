@@ -13,7 +13,7 @@
 #   check-cam      校验 depthai 与 OAK 设备可用性（仅相机宿主节点需要）。
 #   restore        删除 monitor 接口、还原 MAC、把网卡交还 NetworkManager，
 #                  恢复该节点的正常 Wi-Fi 上网。
-#   tx <s>         启动广播 injector；按 s×200 个包限定空口时长。
+#   tx <s>         按所选广播/多播目标启动 injector；按包数限定空口时长。
 #   rx <trial> <s> 采集指定秒数，结果落在独立目录里。
 #   cam <trial> <s> 采集深度+彩色，结果落在独立目录里。
 #   stop tx|rx|cam  Tx 立即停止；Rx 用 SIGINT 优雅保存；Cam 用 SIGTERM 收尾。
@@ -35,18 +35,26 @@ TRIAL="${2:-cap}"
 DUR="${3:-30}"
 TX_DURATION="${2:-30}"
 
-PHY=1
-CHANNEL="2412 20"
-BCAST="FF:FF:FF:FF:FF:FF"          # 多接收端必须广播，单播会导致只有一台收到
-PRESET="TX_CBW_20_HESU"
-DELAY_US=5000                        # 200 pkt/s
-PACKETS_PER_SECOND=$((1000000 / DELAY_US))
+PHY="${CSI_PHY:-1}"
+CHANNEL_FREQ="${CSI_CHANNEL:-2412}"
+BANDWIDTH="${CSI_BANDWIDTH:-20}"
+CHANNEL="$CHANNEL_FREQ $BANDWIDTH"
+PRESET="${CSI_PRESET:-TX_CBW_20_HT}"
+TRAFFIC_MODE="${CSI_TRAFFIC_MODE:-broadcast}"
+case "$TRAFFIC_MODE" in
+    broadcast) DEFAULT_TARGET="FF:FF:FF:FF:FF:FF" ;;
+    multicast) DEFAULT_TARGET="01:00:5E:00:00:01" ;;
+    *) DEFAULT_TARGET="" ;;
+esac
+TARGET_MAC="${CSI_TARGET_MAC:-$DEFAULT_TARGET}"
+DELAY_US="${CSI_DELAY_US:-5000}"
 
 DATADIR="$HOME/csi_data"
 NODE=$(cat "$HOME/.csi_node" 2>/dev/null || hostname -s)
 PS_BIN=/usr/bin/PicoScenes
 PREP_BIN=/usr/sbin/array_prepare_for_picoscenes
 STATUS_BIN=/usr/sbin/array_status
+CSI_EXTRACT="${CSI_EXTRACT:-${CSI_PLOT:-$HOME/csi_extract.py}}"
 
 if [ -n "${CSI_PYTHON:-}" ]; then
     PYTHON_BIN="$CSI_PYTHON"
@@ -59,8 +67,28 @@ fi
 log()  { echo "[$NODE] $*"; }
 fail() { echo "[$NODE] 错误: $*" >&2; exit 1; }
 
+validate_config() {
+    [[ "$PHY" =~ ^[0-9]+$ ]] || fail "CSI_PHY 必须是非负整数"
+    [[ "$CHANNEL_FREQ" =~ ^[0-9]+$ ]] || fail "CSI_CHANNEL 必须是中心频率 MHz"
+    [[ "$BANDWIDTH" =~ ^(20|40|80)$ ]] || fail "CSI_BANDWIDTH 只支持 20/40/80"
+    [[ "$DELAY_US" =~ ^[0-9]+$ ]] && [ "$DELAY_US" -gt 0 ] \
+        || fail "CSI_DELAY_US 必须是正整数"
+    case "$PRESET:$BANDWIDTH" in
+        TX_CBW_20_HT:20|TX_CBW_20_HT_LDPC:20|\
+        TX_CBW_20_VHT:20|TX_CBW_20_VHT_LDPC:20|\
+        TX_CBW_20_HESU:20|TX_CBW_20_HESU_LDPC:20|\
+        TX_CBW_80_VHT:80|TX_CBW_80_VHT_LDPC:80) ;;
+        *) fail "当前严格流程尚未实现 CSI_PRESET=$PRESET / ${BANDWIDTH}MHz 组合" ;;
+    esac
+    [ "$TRAFFIC_MODE" = "broadcast" ] || [ "$TRAFFIC_MODE" = "multicast" ] \
+        || fail "CSI_TRAFFIC_MODE 必须是 broadcast 或 multicast"
+    [[ "$TARGET_MAC" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] \
+        || fail "CSI_TARGET_MAC 不是有效 MAC 地址"
+}
+
 # ---------------------------------------------------------------- check
 do_check() {
+    validate_config
     local rc=0
     log "系统   $(lsb_release -ds 2>/dev/null) / $(uname -r)"
 
@@ -104,12 +132,12 @@ do_check() {
 
 do_check_rx() {
     do_check || return 1
-    [ -f "$HOME/csi_plot.py" ] \
-        || fail "缺少 $HOME/csi_plot.py"
+    [ -f "$CSI_EXTRACT" ] \
+        || fail "缺少 $CSI_EXTRACT；请先 deploy 本包中的 csi_extract.py"
     command -v "$PYTHON_BIN" >/dev/null 2>&1 \
         || fail "找不到 Python: $PYTHON_BIN"
-    "$PYTHON_BIN" -c "import numpy,matplotlib,CSIKit" 2>/dev/null \
-        || fail "接收端 Python 缺少 numpy/matplotlib/CSIKit；先安装采集分析环境"
+    "$PYTHON_BIN" -c "import numpy,picoscenes" 2>/dev/null \
+        || fail "接收端 Python 缺少 numpy/picoscenes；先安装 PicoScenes-Python-Toolbox"
     log "接收端分析环境已就绪：$PYTHON_BIN"
 }
 
@@ -255,16 +283,18 @@ do_restore() {
 
 # ---------------------------------------------------------------- tx
 do_tx() {
+    validate_config
     [[ "$TX_DURATION" =~ ^[0-9]+$ ]] && [ "$TX_DURATION" -gt 0 ] \
         || fail "Tx 时长必须是正整数秒，收到 '$TX_DURATION'"
-    local repeat_count=$((TX_DURATION * PACKETS_PER_SECOND))
+    local packets_per_second=$((1000000 / DELAY_US))
+    local repeat_count=$((TX_DURATION * packets_per_second))
 
     do_stop tx >/dev/null 2>&1
     do_prep
     local launch_ns
     launch_ns=$(date +%s%N)
     "$PS_BIN" "-d debug -i $PHY --mode injector --preset $PRESET \
---repeat $repeat_count --delay $DELAY_US --target-mac-address $BCAST" >/tmp/tx.log 2>&1 &
+--repeat $repeat_count --delay $DELAY_US --target-mac-address $TARGET_MAC" >/tmp/tx.log 2>&1 &
     sleep 1
     pgrep -x PicoScenes >/dev/null \
         || fail "injector 启动后立即退出，详见节点 /tmp/tx.log$(printf '\n'; tail -5 /tmp/tx.log)"
@@ -272,10 +302,14 @@ do_tx() {
     echo "TX_LAUNCH_SYSTEM_NS=$launch_ns"
     echo "TX_REPEAT=$repeat_count"
     echo "TX_DELAY_US=$DELAY_US"
+    echo "TX_PRESET=$PRESET"
+    echo "TX_TRAFFIC_MODE=$TRAFFIC_MODE"
+    echo "TX_TARGET_MAC=$TARGET_MAC"
 }
 
 # ---------------------------------------------------------------- rx
 do_rx() {
+    validate_config
     [[ "$DUR" =~ ^[0-9]+$ ]] || fail "时长必须是整数秒，收到 '$DUR'"
 
     do_stop rx >/dev/null 2>&1
@@ -285,7 +319,7 @@ do_rx() {
     local stamp rundir
     stamp=$(date +%Y%m%d_%H%M%S)
     rundir="$DATADIR/${stamp}_${TRIAL}"
-    mkdir -p "$rundir" || fail "无法创建 $rundir"
+    mkdir "$rundir" || fail "目录已存在或无法创建 $rundir；拒绝混入旧数据"
     cd "$rundir" || fail "无法进入 $rundir"
 
     log "开始采集 ${DUR}s -> $rundir"
@@ -316,9 +350,12 @@ host: $(hostname)
 role: rx
 date: $(date -Iseconds)
 channel: $CHANNEL
+preset_bandwidth_mhz: $BANDWIDTH
 preset: $PRESET
+required_csi_segment: CSI
 tx_delay_us: $DELAY_US
-target_mac: $BCAST
+traffic_mode: $TRAFFIC_MODE
+target_mac: $TARGET_MAC
 duration_s: $DUR
 kernel: $(uname -r)
 file: $out
@@ -327,28 +364,20 @@ EOF
 
     log "采集完成 $(basename "$out")  $((sz/1024/1024)) MB"
 
-    # 本地出图与摘要。失败只告警，不影响已保存的 .csi。
-    # 注意 csi_plot.py 逐帧取 csi_matrix 并按"发送源 MAC+子载波数"筛选，
-    # 不使用 csitools.get_CSI()，以规避首帧定尺寸导致的静默截断。
-    if [ -f "$HOME/csi_plot.py" ] && "$PYTHON_BIN" -c "import numpy,matplotlib,CSIKit" 2>/dev/null; then
-        if "$PYTHON_BIN" "$HOME/csi_plot.py" "$out" 2>&1 | grep -v "Warning\|warn" | sed "s/^/[$NODE]   /"; then
-            :
-        else
-            log "警告: 出图失败，但 .csi 已正常保存"
-        fi
-    else
-        log "跳过出图（缺 csi_plot.py 或 numpy/matplotlib/CSIKit）"
-    fi
-
     local target_npz="${out%.csi}_target_csi.npz"
-    if [ -s "$target_npz" ]; then
-        printf 'target_npz: %s\ntarget_npz_size_bytes: %s\n' \
-            "$target_npz" "$(stat -c %s "$target_npz" 2>/dev/null || echo 0)" \
-            >> "$rundir/metadata.txt"
-    fi
+    "$PYTHON_BIN" "$CSI_EXTRACT" "$out" --output "$target_npz" \
+        >"$rundir/extract.log" 2>&1 \
+        || { tail -n 20 "$rundir/extract.log" >&2; fail "主 CSI 提取失败"; }
+    [ -s "$target_npz" ] || fail "提取器未生成 $target_npz"
+    grep -q '^CSI_SEGMENT=CSI$' "$rundir/extract.log" \
+        || fail "提取结果未证明使用主 CSI 段"
+    sed "s/^/[$NODE]   /" "$rundir/extract.log"
+    printf 'target_npz: %s\ntarget_npz_size_bytes: %s\n' \
+        "$target_npz" "$(stat -c %s "$target_npz" 2>/dev/null || echo 0)" \
+        >> "$rundir/metadata.txt"
     echo "RUNDIR=$rundir"
     echo "CSIFILE=$out"
-    [ -s "$target_npz" ] && echo "TARGETNPZ=$target_npz"
+    echo "TARGETNPZ=$target_npz"
 }
 
 # ---------------------------------------------------------------- cam
@@ -364,7 +393,7 @@ do_cam() {
     local stamp rundir
     stamp=$(date +%Y%m%d_%H%M%S)
     rundir="$DATADIR/${stamp}_${TRIAL}_cam"
-    mkdir -p "$rundir" || fail "无法创建 $rundir"
+    mkdir "$rundir" || fail "目录已存在或无法创建 $rundir；拒绝混入旧数据"
 
     log "开始相机采集 ${DUR}s -> $rundir"
     # 必须流式输出：编排端靠 CAM_READY=1 判断相机已进入采集状态，
@@ -384,13 +413,26 @@ do_cam() {
         fail "相机采集失败（退出码 $rc）"
     fi
 
-    local depth meta
+    local gaps decodable
+    gaps=$(awk -F= '/^CAM_SEQ_GAPS=/{print $2}' "$camlog" | tail -1)
+    decodable=$(awk -F= '/^CAM_COLOR_DECODABLE=/{print $2}' "$camlog" | tail -1)
+    if [ "${CSI_ALLOW_CAMERA_WARNINGS:-0}" != "1" ]; then
+        [ "$gaps" = "0" ] || fail "相机深度序列存在 ${gaps:-未知} 个缺口"
+        [ "$decodable" = "1" ] || fail "相机 H265 彩色视频不可解码"
+    fi
+
+    local depth color meta
     depth=$(awk -F= '/^CAM_DEPTH=/{print $2}' "$camlog")
+    color=$(awk -F= '/^CAM_COLOR=/{print $2}' "$camlog")
     meta=$(awk -F= '/^CAM_META=/{print $2}' "$camlog")
     [ -s "$depth" ] || fail "深度文件缺失或为空: $depth"
+    [ -s "$color" ] || fail "彩色文件缺失或为空: $color"
     [ -s "$meta" ]  || fail "相机元数据缺失: $meta"
 
     echo "CAMDIR=$rundir"
+    echo "CAM_DEPTH_FILE=$depth"
+    echo "CAM_COLOR_FILE=$color"
+    echo "CAM_META_FILE=$meta"
 }
 
 # ---------------------------------------------------------------- main

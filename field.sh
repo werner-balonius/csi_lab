@@ -15,6 +15,8 @@ set -uo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 LAB="$SCRIPT_DIR/csi_lab.sh"
+CONFIG_FILE="${CSI_LAB_CONFIG:-$SCRIPT_DIR/csi_lab.conf}"
+[ -f "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 RESULTS="${CSI_RESULTS:-$HOME/csi_results}"
 MGMT_NET="192.168.50"
 MAC_IP="$MGMT_NET.1"
@@ -285,9 +287,9 @@ stage_probe() {
     fi
     c_ylw "  请人工确认上面输出的四项："
     note "    1. 匹配率 NODE1/NODE3_MATCH_RATIO 均 > 0.95"
-    note "    2. DATA_SUBCARRIERS = 234"
+    note "    2. DATA_SUBCARRIERS = ${CSI_EXPECTED_SUBCARRIERS:-所选配置值}"
     note "    3. CAM_SEQ_GAPS = 0"
-    note "    4. 完整性检查通过"
+    note "    4. VALIDATION_OK = 1"
     ask "四项都正常吗" || return 1
     ok "试采通过"
 }

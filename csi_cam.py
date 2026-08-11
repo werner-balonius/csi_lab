@@ -38,6 +38,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import os
 import signal
 import sys
 import time
@@ -473,6 +474,13 @@ def capture(trial: str, duration: int, outdir: Path, node: str) -> int:
     print(f"CAM_CLOCK_DRIFT_NS={offset_end - offset_start}")
     if dropped_note:
         print(f"CAM_WARN={dropped_note}")
+    if os.environ.get("CSI_ALLOW_CAMERA_WARNINGS", "0") != "1":
+        if gaps != 0:
+            print(f"CAM_ERROR=深度序列存在 {gaps} 个缺口", file=sys.stderr)
+            return 1
+        if not h265_ok:
+            print("CAM_ERROR=彩色 H265 流不可解码", file=sys.stderr)
+            return 1
     return 0
 
 

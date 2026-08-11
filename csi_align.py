@@ -14,11 +14,11 @@
 
 本版新增
 --------
-  1. 导频列剔除：242 -> 234。导频子载波 CSI 恒为 0（转 dB 即 -inf），
-     且不同会话取值不同，直接作为模型输入会构成会话指纹泄漏。
-     实测索引 [6,32,74,100,141,167,209,235]，对应 802.11ax HE 242-tone RU
-     的 ±{22,48,90,116}。原始 242 列一并保留，便于回溯。
-  2. 相机配对：把每个对齐包配到时间上最近的深度帧，并给出配对误差分布。
+  1. 按 PacketFormat 和物理 SubcarrierIndex 生成模型输入：HT20 保留 56 个
+     占用子载波；HE20 与 VHT80 分别按各自导频位置生成 234 个数据子载波。
+  2. 用稳健线性模型估计 Node3 到 Node1 的固定偏移与时钟漂移，并保留
+     原始时间戳、校正时间戳和校正残差。
+  3. 相机配对：把每个对齐包配到时间上最近的深度帧，并给出配对误差分布。
      深度帧时间戳位于 CLOCK_MONOTONIC 域，需加 realtime-monotonic 偏移
      换算到 epoch，该偏移由 csi_cam.py 在采集前后各采样一次。
 """
@@ -40,10 +40,6 @@ import sys
 
 MAGIC = 0x20150315
 MAX_RECORD_SIZE = 256 * 1024 * 1024
-
-# 802.11ax HE 242-tone RU 的导频子载波位置（以 DC 三音被剔除后的数组索引表示）
-PILOT_INDICES = (6, 32, 74, 100, 141, 167, 209, 235)
-
 
 class FormatError(ValueError):
     pass
@@ -258,7 +254,74 @@ def align(
     return matches, duplicates1, duplicates2
 
 
-def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
+def fit_clock_model(node1_ns, node3_ns) -> dict[str, float | int]:
+    """Fit Node3-Node1 offset and linear drift using robust residual rejection."""
+    import numpy as np
+
+    first = np.asarray(node1_ns, dtype=np.int64)
+    second = np.asarray(node3_ns, dtype=np.int64)
+    if first.shape != second.shape:
+        raise ValueError("clock timestamp arrays must have the same shape")
+    valid = (first > 0) & (second > 0)
+    if int(valid.sum()) < 3:
+        raise ValueError("at least three valid timestamp pairs are required")
+
+    first = first[valid]
+    second = second[valid]
+    reference = int(first[0])
+    elapsed_s = (first - reference).astype(np.float64) / 1e9
+    delta_ns = (second - first).astype(np.float64)
+    design = np.column_stack((np.ones(elapsed_s.size), elapsed_s))
+    inliers = np.ones(elapsed_s.size, dtype=bool)
+
+    for _ in range(6):
+        coefficients, *_ = np.linalg.lstsq(design[inliers], delta_ns[inliers], rcond=None)
+        residual = delta_ns - design @ coefficients
+        center = float(np.median(residual[inliers]))
+        mad = float(np.median(np.abs(residual[inliers] - center)))
+        scale = 1.4826 * mad
+        threshold = max(6.0 * scale, 1.0)
+        next_inliers = np.abs(residual - center) <= threshold
+        if int(next_inliers.sum()) < 3 or np.array_equal(next_inliers, inliers):
+            break
+        inliers = next_inliers
+
+    coefficients, *_ = np.linalg.lstsq(design[inliers], delta_ns[inliers], rcond=None)
+    residual = delta_ns - design @ coefficients
+    inlier_residual = residual[inliers]
+    abs_residual = np.abs(inlier_residual)
+    offset, slope = (float(value) for value in coefficients)
+    return {
+        "reference_node1_ns": reference,
+        "offset_ns_at_reference": offset,
+        "drift_ns_per_second": slope,
+        "drift_ppm": slope / 1000.0,
+        "sample_count": int(elapsed_s.size),
+        "inlier_count": int(inliers.sum()),
+        "outlier_count": int(elapsed_s.size - inliers.sum()),
+        "residual_median_ns": float(np.median(inlier_residual)),
+        "residual_mad_ns": float(np.median(np.abs(inlier_residual - np.median(inlier_residual)))),
+        "residual_std_ns": float(np.std(inlier_residual)),
+        "residual_p95_abs_ns": float(np.percentile(abs_residual, 95)),
+        "residual_max_abs_ns": float(np.max(abs_residual)),
+    }
+
+
+def clock_correct(node1_ns: int, node3_ns: int, model: dict) -> tuple[int, int]:
+    elapsed_s = (node1_ns - int(model["reference_node1_ns"])) / 1e9
+    predicted_delta = (
+        float(model["offset_ns_at_reference"])
+        + float(model["drift_ns_per_second"]) * elapsed_s
+    )
+    corrected = int(round(node3_ns - predicted_delta))
+    return corrected, corrected - node1_ns
+
+
+def write_csv(
+    path: Path,
+    matches: list[tuple[Packet, Packet]],
+    clock_model: dict | None = None,
+) -> None:
     fields = [
         "aligned_index",
         "source_mac",
@@ -273,6 +336,8 @@ def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
         "node1_system_ns",
         "node3_system_ns",
         "node3_minus_node1_system_ns",
+        "node3_system_ns_corrected",
+        "node3_clock_residual_ns",
     ]
     with path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
@@ -281,6 +346,12 @@ def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
             delta = None
             if first.system_ns is not None and second.system_ns is not None:
                 delta = second.system_ns - first.system_ns
+            corrected = None
+            residual = None
+            if delta is not None and clock_model is not None:
+                corrected, residual = clock_correct(
+                    first.system_ns, second.system_ns, clock_model
+                )
             writer.writerow(
                 {
                     "aligned_index": index,
@@ -296,6 +367,8 @@ def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
                     "node1_system_ns": first.system_ns,
                     "node3_system_ns": second.system_ns,
                     "node3_minus_node1_system_ns": delta,
+                    "node3_system_ns_corrected": corrected,
+                    "node3_clock_residual_ns": residual,
                 }
             )
 
@@ -308,7 +381,10 @@ def load_prepared_csi(
 
     path = path.expanduser().resolve()
     with np.load(path, allow_pickle=False) as data:
-        required = {"target_csi", "frame_index"}
+        required = {
+            "target_csi", "frame_index", "csi_segment", "packet_format",
+            "bandwidth_mhz", "subcarrier_index",
+        }
         missing_keys = required - set(data.files)
         if missing_keys:
             raise RuntimeError(
@@ -316,6 +392,16 @@ def load_prepared_csi(
             )
         cube = np.asarray(data["target_csi"])
         raw_indices = np.asarray(data["frame_index"], dtype=np.int64)
+        csi_segment = str(np.asarray(data["csi_segment"]).item())
+        metadata = {
+            "csi_segment": csi_segment,
+            "packet_format": str(np.asarray(data["packet_format"]).item()),
+            "bandwidth_mhz": int(np.asarray(data["bandwidth_mhz"]).item()),
+            "subcarrier_index": np.asarray(data["subcarrier_index"], dtype=np.int16),
+        }
+
+    if csi_segment != "CSI":
+        raise RuntimeError(f"{path}: expected main CSI segment, found {csi_segment}")
 
     if raw_indices.ndim != 1:
         raise RuntimeError(f"{path}: frame_index must be one-dimensional")
@@ -335,21 +421,29 @@ def load_prepared_csi(
         preview = ", ".join(str(value) for value in missing_frames[:5])
         raise RuntimeError(f"{path}: aligned frame indices are missing: {preview}")
     rows = [row_for_frame[frame] for frame in frame_indices]
-    return cube[rows]
+    if metadata["subcarrier_index"].shape != (cube.shape[1],):
+        raise RuntimeError(f"{path}: subcarrier_index does not match target_csi")
+    return cube[rows], metadata
 
 
-def strip_pilots(cube, subcarrier_axis: int = 1):
-    """剔除导频列。cube 形如 (frames, subcarrier, rx, tx)。
-
-    只在子载波数确实为 242 时才动手。其他带宽/RU 配置下导频位置不同，
-    盲目按索引删除会破坏数据，此时返回 None 让调用方跳过。
-    """
+def select_model_subcarriers(cube, subcarrier_indices, packet_format, bandwidth_mhz):
     import numpy as np
 
-    if cube.shape[subcarrier_axis] != 242:
-        return None
-    keep = np.setdiff1d(np.arange(242), np.asarray(PILOT_INDICES))
-    return np.take(cube, keep, axis=subcarrier_axis), keep
+    indices = np.asarray(subcarrier_indices, dtype=np.int16)
+    if indices.shape != (cube.shape[1],):
+        raise RuntimeError("subcarrier indices do not match CSI tone axis")
+    pilot_map = {
+        ("HESU", 20): (-116, -90, -48, -22, 22, 48, 90, 116),
+        ("VHT", 80): (-103, -75, -39, -11, 11, 39, 75, 103),
+    }
+    pilots = pilot_map.get((packet_format, int(bandwidth_mhz)), ())
+    if not pilots:
+        return cube, indices
+    missing = sorted(set(pilots) - set(int(value) for value in indices))
+    if missing:
+        raise RuntimeError(f"expected pilot subcarriers are missing: {missing}")
+    keep = ~np.isin(indices, pilots)
+    return cube[:, keep, ...], indices[keep]
 
 
 def load_camera(meta_path: Path):
@@ -414,14 +508,23 @@ def export_npz(
     second_prepared: Path | None = None,
     camera_meta: Path | None = None,
     report: dict | None = None,
+    clock_model: dict | None = None,
 ) -> tuple[list[int], list[int]]:
     import numpy as np
 
     indices1 = [pair[0].frame_index for pair in matches]
     indices2 = [pair[1].frame_index for pair in matches]
     if first_prepared is not None and second_prepared is not None:
-        csi1 = load_prepared_csi(first_prepared, indices1)
-        csi2 = load_prepared_csi(second_prepared, indices2)
+        csi1, metadata1 = load_prepared_csi(first_prepared, indices1)
+        csi2, metadata2 = load_prepared_csi(second_prepared, indices2)
+        if metadata1["packet_format"] != metadata2["packet_format"]:
+            raise RuntimeError("receiver packet formats differ")
+        if metadata1["bandwidth_mhz"] != metadata2["bandwidth_mhz"]:
+            raise RuntimeError("receiver bandwidth metadata differs")
+        if not np.array_equal(
+            metadata1["subcarrier_index"], metadata2["subcarrier_index"]
+        ):
+            raise RuntimeError("receiver subcarrier indices differ")
     else:
         from CSIKit.reader import get_reader
 
@@ -445,6 +548,12 @@ def export_npz(
 
     node1_ns = [pair[0].system_ns or 0 for pair in matches]
     node3_ns = [pair[1].system_ns or 0 for pair in matches]
+    if clock_model is None:
+        raise RuntimeError("precise system_ns timestamps are required for NPZ export")
+    corrected_and_residual = [
+        clock_correct(first_ns, second_ns, clock_model)
+        for first_ns, second_ns in zip(node1_ns, node3_ns)
+    ]
 
     payload = {
         "node1_csi": csi1,
@@ -455,76 +564,92 @@ def export_npz(
             [pair[0].sequence for pair in matches], dtype=np.uint16
         ),
         "task_id": np.asarray([pair[0].task_id for pair in matches], dtype=np.uint16),
+        "csi_segment": np.asarray("CSI"),
         "node1_system_ns": np.asarray(node1_ns, dtype=np.uint64),
         "node3_system_ns": np.asarray(node3_ns, dtype=np.uint64),
+        "node3_system_ns_corrected": np.asarray(
+            [value[0] for value in corrected_and_residual], dtype=np.int64
+        ),
+        "node3_clock_residual_ns": np.asarray(
+            [value[1] for value in corrected_and_residual], dtype=np.int64
+        ),
     }
 
     # 导频剔除版本：模型输入应当用这个，242 列仅供回溯
-    stripped = strip_pilots(csi1)
-    stripped3 = strip_pilots(csi2)
-    if stripped is not None and stripped3 is not None:
-        payload["node1_csi_data"] = stripped[0]
-        payload["node3_csi_data"] = stripped3[0]
-        payload["data_subcarrier_index"] = np.asarray(stripped[1], dtype=np.int64)
-        payload["pilot_subcarrier_index"] = np.asarray(PILOT_INDICES, dtype=np.int64)
-        if report is not None:
-            report["data_subcarriers"] = int(stripped[0].shape[1])
-            report["pilot_subcarriers_removed"] = list(PILOT_INDICES)
-    elif report is not None:
-        report["warnings"].append(
-            f"子载波数为 {csi1.shape[1]}（非 242），跳过导频剔除"
-        )
+    if first_prepared is None:
+        raise RuntimeError("prepared CSI metadata is required for model-input export")
+    model1, data_indices = select_model_subcarriers(
+        csi1,
+        metadata1["subcarrier_index"],
+        metadata1["packet_format"],
+        metadata1["bandwidth_mhz"],
+    )
+    model3, data_indices3 = select_model_subcarriers(
+        csi2,
+        metadata2["subcarrier_index"],
+        metadata2["packet_format"],
+        metadata2["bandwidth_mhz"],
+    )
+    if not np.array_equal(data_indices, data_indices3):
+        raise RuntimeError("receiver model-input subcarrier indices differ")
+    removed = sorted(
+        set(int(value) for value in metadata1["subcarrier_index"])
+        - set(int(value) for value in data_indices)
+    )
+    payload["node1_csi_data"] = model1
+    payload["node3_csi_data"] = model3
+    payload["data_subcarrier_index"] = np.asarray(data_indices, dtype=np.int16)
+    payload["pilot_subcarrier_index"] = np.asarray(removed, dtype=np.int16)
+    payload["packet_format"] = np.asarray(metadata1["packet_format"])
+    payload["bandwidth_mhz"] = np.asarray(metadata1["bandwidth_mhz"], dtype=np.int16)
+    if report is not None:
+        report["data_subcarriers"] = int(model1.shape[1])
+        report["pilot_subcarriers_removed"] = removed
+        report["packet_format"] = metadata1["packet_format"]
+        report["bandwidth_mhz"] = metadata1["bandwidth_mhz"]
 
     # 相机配对
     if camera_meta is not None:
-        try:
-            meta, depth_epoch = load_camera(camera_meta)
-            cam_node = str(meta.get("node", ""))
-            if "node3" in cam_node:
-                reference, reference_name = node3_ns, "node3"
-            elif "node1" in cam_node:
-                reference, reference_name = node1_ns, "node1"
-            else:
-                reference, reference_name = node1_ns, "node1"
-                if report is not None:
-                    report["warnings"].append(
-                        f"相机宿主 '{cam_node}' 不是任一接收端，"
-                        f"深度与 CSI 分属不同时钟域，配对误差不可信"
-                    )
-            if not all(reference):
-                raise ValueError("参考接收端缺少 system_ns（RxSBasic 版本 <4）")
-
-            frame_index, delta = pair_camera(reference, depth_epoch)
-            payload["depth_frame_index"] = np.asarray(frame_index, dtype=np.int64)
-            payload["depth_dt_ns"] = np.asarray(delta, dtype=np.int64)
-            payload["depth_timestamp_epoch_ns"] = np.asarray(
-                depth_epoch, dtype=np.int64
+        meta, depth_epoch = load_camera(camera_meta)
+        cam_node = str(meta.get("node", ""))
+        if "node3" in cam_node:
+            reference, reference_name = node3_ns, "node3"
+        elif "node1" in cam_node:
+            reference, reference_name = node1_ns, "node1"
+        else:
+            raise ValueError(
+                f"相机宿主 '{cam_node}' 不是任一接收端；无法可靠地跨时钟域配对"
             )
+        if not all(reference):
+            raise ValueError("参考接收端缺少 system_ns（RxSBasic 版本 <4）")
 
-            if report is not None:
-                magnitude = sorted(abs(value) for value in delta)
-                count = len(magnitude)
-                half_frame = 1_000_000_000 // 60  # 30fps 的半帧 ≈ 16.67 ms
-                report["camera"] = {
-                    "meta_file": str(camera_meta),
-                    "host_node": cam_node,
-                    "reference_receiver": reference_name,
-                    "depth_frames": len(depth_epoch),
-                    "depth_measured_fps": meta["depth"].get("measured_fps"),
-                    "depth_sequence_gaps": meta["depth"].get("sequence_gaps"),
-                    "clock_offset_drift_ns": meta["clock"].get("offset_drift_ns"),
-                    "pair_abs_dt_median_ns": magnitude[count // 2] if count else None,
-                    "pair_abs_dt_p95_ns": magnitude[int(count * 0.95)] if count else None,
-                    "pair_abs_dt_max_ns": magnitude[-1] if count else None,
-                    "pairs_beyond_half_frame": sum(
-                        1 for value in magnitude if value > half_frame
-                    ),
-                    "calibration": meta.get("calibration"),
-                }
-        except Exception as exc:  # noqa: BLE001
-            if report is not None:
-                report["warnings"].append(f"相机配对失败: {exc}")
+        frame_index, delta = pair_camera(reference, depth_epoch)
+        payload["depth_frame_index"] = np.asarray(frame_index, dtype=np.int64)
+        payload["depth_dt_ns"] = np.asarray(delta, dtype=np.int64)
+        payload["depth_timestamp_epoch_ns"] = np.asarray(depth_epoch, dtype=np.int64)
 
+        if report is not None:
+            magnitude = sorted(abs(value) for value in delta)
+            count = len(magnitude)
+            half_frame = 1_000_000_000 // 60
+            report["camera"] = {
+                "meta_file": str(camera_meta),
+                "host_node": cam_node,
+                "reference_receiver": reference_name,
+                "depth_frames": len(depth_epoch),
+                "depth_measured_fps": meta["depth"].get("measured_fps"),
+                "depth_sequence_gaps": meta["depth"].get("sequence_gaps"),
+                "color_decodable": meta.get("color", {}).get("decodable"),
+                "clock_offset_drift_ns": meta["clock"].get("offset_drift_ns"),
+                "pair_abs_dt_median_ns": magnitude[count // 2] if count else None,
+                "pair_abs_dt_p95_ns": magnitude[min(count - 1, int(count * 0.95))]
+                if count else None,
+                "pair_abs_dt_max_ns": magnitude[-1] if count else None,
+                "pairs_beyond_half_frame": sum(
+                    1 for value in magnitude if value > half_frame
+                ),
+                "calibration": meta.get("calibration"),
+            }
     np.savez_compressed(output, **payload)
     return list(csi1.shape), list(csi2.shape)
 
@@ -583,11 +708,21 @@ def main() -> int:
     target3 = [p for p in capture3.packets if p.source_mac == source and p.key]
     matches, duplicate1, duplicate3 = align(target1, target3)
 
+    clock_model = None
+    clock_error = None
+    try:
+        clock_model = fit_clock_model(
+            [pair[0].system_ns or 0 for pair in matches],
+            [pair[1].system_ns or 0 for pair in matches],
+        )
+    except ValueError as exc:
+        clock_error = str(exc)
+
     output_dir = args.output_dir.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / "aligned_packets.csv"
     report_path = output_dir / "alignment_report.json"
-    write_csv(csv_path, matches)
+    write_csv(csv_path, matches, clock_model)
 
     deltas = [
         b.system_ns - a.system_ns
@@ -608,6 +743,8 @@ def main() -> int:
     start1, end1 = time_bounds(target1)
     start3, end3 = time_bounds(target3)
     warnings: list[str] = []
+    if clock_error:
+        warnings.append(f"clock model unavailable: {clock_error}")
     if not matches:
         warnings.append("no common packet IDs; captures are not the same transmission")
     if duplicate1 or duplicate3:
@@ -646,11 +783,13 @@ def main() -> int:
         "unmatched_node3": len(target3) - len(matches),
         "node3_minus_node1_system_ns_median": median_delta,
         "node3_minus_node1_system_ns_mad": mad_delta,
+        "clock_model_node3_to_node1": clock_model,
         "node3_non_monotonic_steps": non_monotonic,
         "warnings": warnings,
         "outputs": {"aligned_packets_csv": str(csv_path)},
     }
 
+    export_failed = False
     if args.export_npz and matches:
         npz_path = output_dir / "aligned_csi.npz"
         try:
@@ -663,11 +802,13 @@ def main() -> int:
                 args.node3_target_npz,
                 args.cam_meta,
                 report,
+                clock_model,
             )
             report["outputs"]["aligned_csi_npz"] = str(npz_path)  # type: ignore[index]
             report["aligned_shapes"] = {"node1": shape1, "node3": shape3}
         except Exception as exc:
-            warning = f"NPZ export skipped: {exc}"
+            export_failed = True
+            warning = f"NPZ export failed: {exc}"
             warnings.append(warning)
             print(f"WARNING: {warning}", file=sys.stderr)
 
@@ -684,6 +825,9 @@ def main() -> int:
     print(f"NON_MONOTONIC={non_monotonic}")
     if median_delta is not None:
         print(f"CLOCK_OFFSET_NODE3_MINUS_NODE1_NS={int(median_delta)}")
+    if clock_model is not None:
+        print(f"CLOCK_DRIFT_PPM={clock_model['drift_ppm']:.6f}")
+        print(f"CLOCK_RESIDUAL_P95_NS={clock_model['residual_p95_abs_ns']:.0f}")
     if "data_subcarriers" in report:
         print(f"DATA_SUBCARRIERS={report['data_subcarriers']}")
     camera = report.get("camera")
@@ -696,6 +840,8 @@ def main() -> int:
     for message in warnings:
         print(f"WARNING={message}", file=sys.stderr)
     print(f"REPORT={report_path}")
+    if export_failed:
+        return 4
     return 0 if matches else 3
 
 
