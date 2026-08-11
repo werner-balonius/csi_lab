@@ -48,6 +48,7 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 | `*_depth.bin` | uint16 深度，640×360，小端 |
 | `*_color.h265` | 1080p H.265 |
 | `*_cam.json` | 相机内参、时间戳、时钟偏移 |
+| `experiment.txt` | trial 参数及 Tx 接口、频率、报告功率和 AX210 功率控制模式 |
 
 `aligned_csi.npz` 里 `node1_csi_data` / `node3_csi_data` 形状 `(T, 234, 2, 1)`，
 已剔除 8 个导频子载波；`depth_frame_index` 给出每个包对应的深度帧号。
@@ -58,7 +59,9 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 
 不要直接运行 `phase_c_*.txt` 批量任务。先保持新布局不动并完成：
 
-1. 固定天线、支架和线缆，显式设置并记录发射功率；接收增益若可控也必须记录。
+1. 固定天线、支架和线缆；记录 Tx monitor 接口的实测频率与 `iw dev` 报告功率。
+   AX210 发射功率受固件/法规控制，接收增益由固件 AGC 管理；不要把 QCA9300 的
+   PicoScenes `--rx-gain` 参数误当作 AX210 设置。
 2. 运行一次正式空场，确认两端 5 秒分段均值没有不可解释的慢漂。
 3. 运行一次 Link2 walk，动作窗必须包含约 5 秒前空场、15–20 秒动作和至少 5 秒后空场。
 4. 人工核对彩色/深度时间线；同时比较 RSSI 动态标准差、CSI 子载波变化能量和两条链路的特异性。

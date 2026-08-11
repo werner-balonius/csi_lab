@@ -75,7 +75,7 @@ usage() {
   ./csi_lab.sh restore              恢复三台 Wi-Fi
 
 环境变量:
-  CAM_HOST=node1     指定相机宿主；留空则不采相机
+  CAM_HOST=node3     指定相机宿主（当前现场为 node3）；留空则不采相机
   NO_RESTORE=1       采集后不恢复 Wi-Fi（批量采集内部自动使用）
   TX_NODE / RX_A / RX_B    默认 node2 / node1 / node3
 
@@ -222,6 +222,10 @@ run_trial() {
 
     local tx_repeat; tx_repeat=$(kv TX_REPEAT "$tx_log")
     local tx_launch; tx_launch=$(kv TX_LAUNCH_SYSTEM_NS "$tx_log")
+    local tx_rf_if; tx_rf_if=$(kv TX_RF_INTERFACE "$tx_log")
+    local tx_freq; tx_freq=$(kv TX_FREQUENCY_MHZ "$tx_log")
+    local tx_power; tx_power=$(kv TX_POWER_DBM_REPORTED "$tx_log")
+    local tx_power_control; tx_power_control=$(kv TX_POWER_CONTROL "$tx_log")
     [ -n "$tx_repeat" ] || die "发射端日志缺少 TX_REPEAT"
 
     sleep $((dur + TX_MARGIN))
@@ -301,6 +305,11 @@ tx_duration_s: $dur
 rx_duration_s: $rx_dur
 tx_expected_packets: $tx_repeat
 tx_launch_system_ns: $tx_launch
+tx_rf_interface: ${tx_rf_if:-unknown}
+frequency_mhz: ${tx_freq:-unknown}
+txpower_dbm_reported: ${tx_power:-unknown}
+txpower_control: ${tx_power_control:-unknown}
+rx_gain_mode: AX210 firmware AGC, numeric gain not exposed
 started_at: $stamp
 EOF
 

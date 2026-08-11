@@ -169,6 +169,20 @@ do_prep() {
     log "monitor 接口 $mon_line @ ${cur_mhz} MHz 已就绪"
 }
 
+# 读取 array_prepare 后的真实射频状态。AX210 的接收增益由固件 AGC 管理，
+# PicoScenes 的 --rx-gain 只适用于 QCA9300，不能把该参数误记为 AX210 设置。
+rf_state() {
+    RF_INTERFACE=$(iw dev 2>/dev/null | awk '/Interface/{i=$2} /type monitor/{print i; exit}')
+    RF_FREQUENCY_MHZ=""
+    RF_TXPOWER_DBM=""
+    if [ -n "$RF_INTERFACE" ]; then
+        RF_FREQUENCY_MHZ=$(iw dev "$RF_INTERFACE" info 2>/dev/null \
+            | awk '/channel/{gsub(/[()]/, "", $3); print $3; exit}')
+        RF_TXPOWER_DBM=$(iw dev "$RF_INTERFACE" info 2>/dev/null \
+            | awk '/txpower/{print $2; exit}')
+    fi
+}
+
 # ---------------------------------------------------------------- stop
 # do_stop [tx|rx]
 # 接收端必须优雅退出，否则 .csi 不落盘；发射端没有文件要保存，强杀无害。
@@ -261,6 +275,7 @@ do_tx() {
 
     do_stop tx >/dev/null 2>&1
     do_prep
+    rf_state
     local launch_ns
     launch_ns=$(date +%s%N)
     "$PS_BIN" "-d debug -i $PHY --mode injector --preset $PRESET \
@@ -272,6 +287,10 @@ do_tx() {
     echo "TX_LAUNCH_SYSTEM_NS=$launch_ns"
     echo "TX_REPEAT=$repeat_count"
     echo "TX_DELAY_US=$DELAY_US"
+    echo "TX_RF_INTERFACE=${RF_INTERFACE:-unknown}"
+    echo "TX_FREQUENCY_MHZ=${RF_FREQUENCY_MHZ:-unknown}"
+    echo "TX_POWER_DBM_REPORTED=${RF_TXPOWER_DBM:-unknown}"
+    echo "TX_POWER_CONTROL=AX210_firmware_regulatory"
 }
 
 # ---------------------------------------------------------------- rx
@@ -280,6 +299,7 @@ do_rx() {
 
     do_stop rx >/dev/null 2>&1
     do_prep
+    rf_state
 
     # 每个 trial 独立空目录 -> 产出文件唯一，不需要靠时间戳猜
     local stamp rundir
@@ -321,6 +341,11 @@ tx_delay_us: $DELAY_US
 target_mac: $BCAST
 duration_s: $DUR
 kernel: $(uname -r)
+rf_interface: ${RF_INTERFACE:-unknown}
+frequency_mhz: ${RF_FREQUENCY_MHZ:-unknown}
+local_interface_txpower_dbm_reported: ${RF_TXPOWER_DBM:-unknown}
+rx_gain_mode: AX210_firmware_AGC_not_exposed
+picoscenes_rx_gain_option: unsupported_for_AX210
 file: $out
 size_bytes: $sz
 EOF
