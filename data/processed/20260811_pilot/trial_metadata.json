@@ -1,0 +1,2638 @@
+[
+  {
+    "manifest": {
+      "class": "empty",
+      "trial": "empty_05m_formal_gate_01",
+      "directory": "20260811_153018_1t2r_cam_empty_05m_formal_gate_01",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "45",
+      "valid": "yes",
+      "role": "main",
+      "notes": "formal empty baseline"
+    },
+    "experiment": {
+      "trial": "empty_05m_formal_gate_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "45",
+      "rx_duration_s": "60",
+      "tx_expected_packets": "9000",
+      "tx_launch_system_ns": "1786458628168165419",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "started_at": "20260811_153018",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T14:41:32.817157+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 8805,
+      "node1_match_ratio": 0.9908845374746793,
+      "node3_match_ratio": 0.9905501181235234,
+      "unmatched_node1": 81,
+      "unmatched_node3": 84,
+      "node3_minus_node1_system_ns_median": -657585,
+      "node3_minus_node1_system_ns_mad": 39046,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [
+        "duplicate keys were paired in receiver arrival order"
+      ],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          8805,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          8805,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 13762,
+        "target_packets": 8886,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786458629321055607,
+        "system_ns_end": 1786458674297470074,
+        "utc_start": "2026-08-11T14:30:29.321055+00:00",
+        "utc_end": "2026-08-11T14:31:14.297470+00:00"
+      },
+      "node3": {
+        "all_frames": 13452,
+        "target_packets": 8889,
+        "duplicate_keys": 1,
+        "system_ns_start": 1786458629320434522,
+        "system_ns_end": 1786458674296762788,
+        "utc_start": "2026-08-11T14:30:29.320434+00:00",
+        "utc_end": "2026-08-11T14:31:14.296763+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1801,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 242,
+        "pair_abs_dt_median_ns": 8295954,
+        "pair_abs_dt_p95_ns": 15918812,
+        "pair_abs_dt_max_ns": 16677689,
+        "pairs_beyond_half_frame": 3,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 62327932,
+    "aligned_csi_sha256": "6c2363a1335a51332f5bb206c948c7a3dadf8a56e4d1a00a843f44d3c8d7e7ca"
+  },
+  {
+    "manifest": {
+      "class": "empty",
+      "trial": "empty_05m_pilot_02",
+      "directory": "20260811_160836_1t2r_cam_empty_05m_pilot_02",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "stable empty baseline"
+    },
+    "experiment": {
+      "trial": "empty_05m_pilot_02",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786460926388822510",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "started_at": "20260811_160836",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:10:06.279481+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6896,
+      "node1_match_ratio": 0.9948066935949221,
+      "node3_match_ratio": 0.9925158318940702,
+      "unmatched_node1": 36,
+      "unmatched_node3": 52,
+      "node3_minus_node1_system_ns_median": -686378.0,
+      "node3_minus_node1_system_ns_mad": 36710.5,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6896,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6896,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 9786,
+        "target_packets": 6932,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786460927639057713,
+        "system_ns_end": 1786460962620685788,
+        "utc_start": "2026-08-11T15:08:47.639058+00:00",
+        "utc_end": "2026-08-11T15:09:22.620686+00:00"
+      },
+      "node3": {
+        "all_frames": 9847,
+        "target_packets": 6948,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786460927638308261,
+        "system_ns_end": 1786460962620004394,
+        "utc_start": "2026-08-11T15:08:47.638308+00:00",
+        "utc_end": "2026-08-11T15:09:22.620004+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": -35,
+        "pair_abs_dt_median_ns": 8244898,
+        "pair_abs_dt_p95_ns": 15753075,
+        "pair_abs_dt_max_ns": 16658695,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48798552,
+    "aligned_csi_sha256": "9ac9803f52fb6f4d2b6458be4a0f00e8f39edd9b504312cb959746242f53519b"
+  },
+  {
+    "manifest": {
+      "class": "empty",
+      "trial": "empty_05m_pilot_03",
+      "directory": "20260811_161227_1t2r_cam_empty_05m_pilot_03",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "node1 light drift retained"
+    },
+    "experiment": {
+      "trial": "empty_05m_pilot_03",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786461156321816939",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "started_at": "20260811_161227",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:13:57.117303+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6855,
+      "node1_match_ratio": 0.9913232104121475,
+      "node3_match_ratio": 0.9907501083971673,
+      "unmatched_node1": 60,
+      "unmatched_node3": 64,
+      "node3_minus_node1_system_ns_median": -602279,
+      "node3_minus_node1_system_ns_mad": 34520,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6855,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6855,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10513,
+        "target_packets": 6915,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461157572325857,
+        "system_ns_end": 1786461192553358314,
+        "utc_start": "2026-08-11T15:12:37.572326+00:00",
+        "utc_end": "2026-08-11T15:13:12.553358+00:00"
+      },
+      "node3": {
+        "all_frames": 10498,
+        "target_packets": 6919,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461157571750557,
+        "system_ns_end": 1786461192552680732,
+        "utc_start": "2026-08-11T15:12:37.571751+00:00",
+        "utc_end": "2026-08-11T15:13:12.552681+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": -57,
+        "pair_abs_dt_median_ns": 8257455,
+        "pair_abs_dt_p95_ns": 15676204,
+        "pair_abs_dt_max_ns": 16670856,
+        "pairs_beyond_half_frame": 2,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48499929,
+    "aligned_csi_sha256": "033ff3ce2e3922e99b20bf01c85fe5a487bb5db601533cd0c005d07d1f6fe692"
+  },
+  {
+    "manifest": {
+      "class": "walk_link2",
+      "trial": "walk_link2_05m_pilot_01",
+      "directory": "20260811_161723_1t2r_cam_walk_link2_05m_pilot_01",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "walk_link2_05m_pilot_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786461453535520188",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "walk_link2",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_161723"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:18:53.397003+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6831,
+      "node1_match_ratio": 0.9892831281679942,
+      "node3_match_ratio": 0.9904306220095693,
+      "unmatched_node1": 74,
+      "unmatched_node3": 66,
+      "node3_minus_node1_system_ns_median": -617320,
+      "node3_minus_node1_system_ns_mad": 39311,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6831,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6831,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10484,
+        "target_packets": 6905,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461454780370709,
+        "system_ns_end": 1786461489762050187,
+        "utc_start": "2026-08-11T15:17:34.780371+00:00",
+        "utc_end": "2026-08-11T15:18:09.762050+00:00"
+      },
+      "node3": {
+        "all_frames": 10452,
+        "target_packets": 6897,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461454779657262,
+        "system_ns_end": 1786461489761397564,
+        "utc_start": "2026-08-11T15:17:34.779657+00:00",
+        "utc_end": "2026-08-11T15:18:09.761398+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 100,
+        "pair_abs_dt_median_ns": 8346102,
+        "pair_abs_dt_p95_ns": 15918269,
+        "pair_abs_dt_max_ns": 16670886,
+        "pairs_beyond_half_frame": 2,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48351637,
+    "aligned_csi_sha256": "c802b1ad0cc40a790bb9006b044d84a54f4066f9bfa04378204cba20fb516d0a"
+  },
+  {
+    "manifest": {
+      "class": "walk_link2",
+      "trial": "walk_link2_05m_pilot_02",
+      "directory": "20260811_162114_1t2r_cam_walk_link2_05m_pilot_02",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "walk_link2_05m_pilot_02",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786461684077935056",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "walk_link2",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_162114"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:22:43.888330+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6876,
+      "node1_match_ratio": 0.9924942263279446,
+      "node3_match_ratio": 0.992637505413599,
+      "unmatched_node1": 52,
+      "unmatched_node3": 51,
+      "node3_minus_node1_system_ns_median": -21412.5,
+      "node3_minus_node1_system_ns_mad": 40293.0,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6876,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6876,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10568,
+        "target_packets": 6928,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461685329476022,
+        "system_ns_end": 1786461720310027250,
+        "utc_start": "2026-08-11T15:21:25.329476+00:00",
+        "utc_end": "2026-08-11T15:22:00.310027+00:00"
+      },
+      "node3": {
+        "all_frames": 10556,
+        "target_packets": 6927,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461685329367526,
+        "system_ns_end": 1786461720310098208,
+        "utc_start": "2026-08-11T15:21:25.329368+00:00",
+        "utc_end": "2026-08-11T15:22:00.310098+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 294,
+        "pair_abs_dt_median_ns": 8284775,
+        "pair_abs_dt_p95_ns": 15860692,
+        "pair_abs_dt_max_ns": 16650510,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48666615,
+    "aligned_csi_sha256": "582f977bb53024be5c267f73f2225f7582389c84e94ac82f0b1e2a52d6e2f82a"
+  },
+  {
+    "manifest": {
+      "class": "walk_link2",
+      "trial": "walk_link2_05m_pilot_03",
+      "directory": "20260811_162520_1t2r_cam_walk_link2_05m_pilot_03",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "walk_link2_05m_pilot_03",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786461929724266806",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "walk_link2",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_162520"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:26:49.622231+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6861,
+      "node1_match_ratio": 0.9931962941517082,
+      "node3_match_ratio": 0.9901861740510897,
+      "unmatched_node1": 47,
+      "unmatched_node3": 68,
+      "node3_minus_node1_system_ns_median": 724563,
+      "node3_minus_node1_system_ns_mad": 42963,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6861,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6861,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10299,
+        "target_packets": 6908,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461931008343855,
+        "system_ns_end": 1786461965989731980,
+        "utc_start": "2026-08-11T15:25:31.008344+00:00",
+        "utc_end": "2026-08-11T15:26:05.989732+00:00"
+      },
+      "node3": {
+        "all_frames": 10339,
+        "target_packets": 6929,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786461931008965660,
+        "system_ns_end": 1786461965990546916,
+        "utc_start": "2026-08-11T15:25:31.008966+00:00",
+        "utc_end": "2026-08-11T15:26:05.990547+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 16,
+        "pair_abs_dt_median_ns": 8373892,
+        "pair_abs_dt_p95_ns": 15949463,
+        "pair_abs_dt_max_ns": 16662682,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48565083,
+    "aligned_csi_sha256": "0b37d07cbc036a9d0af2e2eb3e92731919a5804ca97498aae106bf2362b42874"
+  },
+  {
+    "manifest": {
+      "class": "arm_wave",
+      "trial": "arm_wave_05m_pilot_01",
+      "directory": "20260811_163245_1t2r_cam_arm_wave_05m_pilot_01",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "arm_wave_05m_pilot_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786462374012867650",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "arm_wave",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_163245"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:34:14.673972+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6852,
+      "node1_match_ratio": 0.9913194444444444,
+      "node3_match_ratio": 0.9916063675832127,
+      "unmatched_node1": 60,
+      "unmatched_node3": 58,
+      "node3_minus_node1_system_ns_median": 1433768.5,
+      "node3_minus_node1_system_ns_mad": 36035.5,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6852,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6852,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10023,
+        "target_packets": 6912,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462375292080798,
+        "system_ns_end": 1786462410273807190,
+        "utc_start": "2026-08-11T15:32:55.292081+00:00",
+        "utc_end": "2026-08-11T15:33:30.273807+00:00"
+      },
+      "node3": {
+        "all_frames": 10041,
+        "target_packets": 6910,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462375293510380,
+        "system_ns_end": 1786462410275355561,
+        "utc_start": "2026-08-11T15:32:55.293510+00:00",
+        "utc_end": "2026-08-11T15:33:30.275356+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 99,
+        "pair_abs_dt_median_ns": 8329478,
+        "pair_abs_dt_p95_ns": 15828601,
+        "pair_abs_dt_max_ns": 16666111,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48425897,
+    "aligned_csi_sha256": "502d1c41ebfd7efd92576141b84c977bee76656d9248ecbda140a63a4cf2fbca"
+  },
+  {
+    "manifest": {
+      "class": "arm_wave",
+      "trial": "arm_wave_05m_pilot_02",
+      "directory": "20260811_163645_1t2r_cam_arm_wave_05m_pilot_02",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "arm_wave_05m_pilot_02",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786462615317369374",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "arm_wave",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_163645"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:38:15.312320+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6888,
+      "node1_match_ratio": 0.9942263279445728,
+      "node3_match_ratio": 0.9926502377864246,
+      "unmatched_node1": 40,
+      "unmatched_node3": 51,
+      "node3_minus_node1_system_ns_median": 1089510.5,
+      "node3_minus_node1_system_ns_mad": 37969.0,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6888,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6888,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10219,
+        "target_packets": 6928,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462616576224682,
+        "system_ns_end": 1786462651557518458,
+        "utc_start": "2026-08-11T15:36:56.576225+00:00",
+        "utc_end": "2026-08-11T15:37:31.557518+00:00"
+      },
+      "node3": {
+        "all_frames": 10248,
+        "target_packets": 6939,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462616577255501,
+        "system_ns_end": 1786462651558579322,
+        "utc_start": "2026-08-11T15:36:56.577255+00:00",
+        "utc_end": "2026-08-11T15:37:31.558579+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 62,
+        "pair_abs_dt_median_ns": 8682592,
+        "pair_abs_dt_p95_ns": 15834543,
+        "pair_abs_dt_max_ns": 16573929,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48645296,
+    "aligned_csi_sha256": "30a4ce9dba79d984af96959029a5a07034d45cebf785d0af23a9bcae852d53a3"
+  },
+  {
+    "manifest": {
+      "class": "arm_wave",
+      "trial": "arm_wave_05m_pilot_03",
+      "directory": "20260811_164047_1t2r_cam_arm_wave_05m_pilot_03",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "arm_wave_05m_pilot_03",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786462857100331439",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "arm_wave",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_164047"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:42:16.969943+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6893,
+      "node1_match_ratio": 0.9933708027093241,
+      "node3_match_ratio": 0.993800461361015,
+      "unmatched_node1": 46,
+      "unmatched_node3": 43,
+      "node3_minus_node1_system_ns_median": 907965,
+      "node3_minus_node1_system_ns_mad": 34365,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6893,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6893,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10623,
+        "target_packets": 6939,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462858344571075,
+        "system_ns_end": 1786462893325769694,
+        "utc_start": "2026-08-11T15:40:58.344571+00:00",
+        "utc_end": "2026-08-11T15:41:33.325770+00:00"
+      },
+      "node3": {
+        "all_frames": 10481,
+        "target_packets": 6936,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786462858345471870,
+        "system_ns_end": 1786462893326741338,
+        "utc_start": "2026-08-11T15:40:58.345472+00:00",
+        "utc_end": "2026-08-11T15:41:33.326741+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": -18,
+        "pair_abs_dt_median_ns": 7893907,
+        "pair_abs_dt_p95_ns": 15731583,
+        "pair_abs_dt_max_ns": 16487463,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48647732,
+    "aligned_csi_sha256": "8d82250c50c333ada1d06891a34e655ade8c87b80bb788a5408d29b073782cfc"
+  },
+  {
+    "manifest": {
+      "class": "leg_lift",
+      "trial": "leg_lift_05m_pilot_01",
+      "directory": "20260811_164531_1t2r_cam_leg_lift_05m_pilot_01",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "leg_lift_05m_pilot_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786463140724695659",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "leg_lift",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_164531"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:47:00.617153+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6881,
+      "node1_match_ratio": 0.9936462093862816,
+      "node3_match_ratio": 0.991355712433367,
+      "unmatched_node1": 44,
+      "unmatched_node3": 60,
+      "node3_minus_node1_system_ns_median": 781552,
+      "node3_minus_node1_system_ns_mad": 34311,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6881,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6881,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10190,
+        "target_packets": 6925,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786463141986017659,
+        "system_ns_end": 1786463176965965405,
+        "utc_start": "2026-08-11T15:45:41.986017+00:00",
+        "utc_end": "2026-08-11T15:46:16.965965+00:00"
+      },
+      "node3": {
+        "all_frames": 10177,
+        "target_packets": 6941,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786463141986859958,
+        "system_ns_end": 1786463176966742950,
+        "utc_start": "2026-08-11T15:45:41.986860+00:00",
+        "utc_end": "2026-08-11T15:46:16.966743+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 26,
+        "pair_abs_dt_median_ns": 8126166,
+        "pair_abs_dt_p95_ns": 15850707,
+        "pair_abs_dt_max_ns": 16664725,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48581691,
+    "aligned_csi_sha256": "932481fe7cf45ef70b3bb4ef53ae047266469ccf31df52b9edffabc99a426d64"
+  },
+  {
+    "manifest": {
+      "class": "leg_lift",
+      "trial": "leg_lift_05m_pilot_02_retry_01",
+      "directory": "20260811_165841_1t2r_cam_leg_lift_05m_pilot_02_retry_01",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "door restored closed; valid retry"
+    },
+    "experiment": {
+      "trial": "leg_lift_05m_pilot_02_retry_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786463930904168912",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "leg_lift",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_165841"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:00:10.672495+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6870,
+      "node1_match_ratio": 0.9944991314418066,
+      "node3_match_ratio": 0.9899135446685879,
+      "unmatched_node1": 38,
+      "unmatched_node3": 70,
+      "node3_minus_node1_system_ns_median": 272169.5,
+      "node3_minus_node1_system_ns_mad": 34867.5,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6870,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6870,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10286,
+        "target_packets": 6908,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786463932158443657,
+        "system_ns_end": 1786463967134880571,
+        "utc_start": "2026-08-11T15:58:52.158444+00:00",
+        "utc_end": "2026-08-11T15:59:27.134881+00:00"
+      },
+      "node3": {
+        "all_frames": 10404,
+        "target_packets": 6940,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786463932158672872,
+        "system_ns_end": 1786463967140243469,
+        "utc_start": "2026-08-11T15:58:52.158673+00:00",
+        "utc_end": "2026-08-11T15:59:27.140244+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 92,
+        "pair_abs_dt_median_ns": 8312804,
+        "pair_abs_dt_p95_ns": 15853461,
+        "pair_abs_dt_max_ns": 16658247,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48550444,
+    "aligned_csi_sha256": "8347b9d4aaba69f6278b413e5084145c4c503ffcbda7acc206dbb25690a0837e"
+  },
+  {
+    "manifest": {
+      "class": "leg_lift",
+      "trial": "leg_lift_05m_pilot_03",
+      "directory": "20260811_170325_1t2r_cam_leg_lift_05m_pilot_03",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "leg_lift_05m_pilot_03",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786464215053161710",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "leg_lift",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_170325"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:04:55.254067+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6871,
+      "node1_match_ratio": 0.9939244900911326,
+      "node3_match_ratio": 0.9899149978389281,
+      "unmatched_node1": 42,
+      "unmatched_node3": 70,
+      "node3_minus_node1_system_ns_median": 61175,
+      "node3_minus_node1_system_ns_mad": 41234,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6871,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6871,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 13081,
+        "target_packets": 6913,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786464216301750668,
+        "system_ns_end": 1786464251283735721,
+        "utc_start": "2026-08-11T16:03:36.301751+00:00",
+        "utc_end": "2026-08-11T16:04:11.283736+00:00"
+      },
+      "node3": {
+        "all_frames": 12721,
+        "target_packets": 6941,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786464216301822675,
+        "system_ns_end": 1786464251283804947,
+        "utc_start": "2026-08-11T16:03:36.301823+00:00",
+        "utc_end": "2026-08-11T16:04:11.283805+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 254,
+        "pair_abs_dt_median_ns": 8117388,
+        "pair_abs_dt_p95_ns": 15874641,
+        "pair_abs_dt_max_ns": 16601796,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48525257,
+    "aligned_csi_sha256": "daeb8b61b677f008bed340556638ecc7493d8d4eb4a3de3ca90cd61db0660c1a"
+  },
+  {
+    "manifest": {
+      "class": "empty_chair",
+      "trial": "empty_chair_05m_pilot_01",
+      "directory": "20260811_171557_1t2r_cam_empty_chair_05m_pilot_01",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "tx_duration_s": "45",
+      "valid": "yes",
+      "role": "calibration",
+      "notes": "sit-to-stand chair-layout baseline; not one of main 15"
+    },
+    "experiment": {
+      "trial": "empty_chair_05m_pilot_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "45",
+      "rx_duration_s": "60",
+      "tx_expected_packets": "9000",
+      "tx_launch_system_ns": "1786464966761273621",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "none",
+      "action_label": "none",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_CHAIR_20260811.md",
+      "chair_center_xyz_m": "-1.250 2.165 0.500",
+      "chair_orientation": "seat front toward node3 camera; back toward node2",
+      "chair_seat_height_m": "0.500",
+      "chair_description": "teal fabric armless office chair; black five-caster swivel base",
+      "chair_stability": "five casters immobilized and swivel orientation fixed before collection",
+      "started_at": "20260811_171557"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:17:40.339111+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 8859,
+      "node1_match_ratio": 0.9950578456699989,
+      "node3_match_ratio": 0.9917161088100303,
+      "unmatched_node1": 44,
+      "unmatched_node3": 74,
+      "node3_minus_node1_system_ns_median": 528688,
+      "node3_minus_node1_system_ns_mad": 44400,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          8859,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          8859,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 13299,
+        "target_packets": 8903,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786464968009748993,
+        "system_ns_end": 1786465012985127544,
+        "utc_start": "2026-08-11T16:16:08.009749+00:00",
+        "utc_end": "2026-08-11T16:16:52.985127+00:00"
+      },
+      "node3": {
+        "all_frames": 13443,
+        "target_packets": 8933,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786464968010311360,
+        "system_ns_end": 1786465012990685441,
+        "utc_start": "2026-08-11T16:16:08.010311+00:00",
+        "utc_end": "2026-08-11T16:16:52.990685+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1801,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 82,
+        "pair_abs_dt_median_ns": 8480836,
+        "pair_abs_dt_p95_ns": 15828391,
+        "pair_abs_dt_max_ns": 16624800,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 62793510,
+    "aligned_csi_sha256": "f03eaad62653d8f92fe06cf9fc78fc4f7c048914c1fc6c85b99c3c3dcd7ce80d"
+  },
+  {
+    "manifest": {
+      "class": "sit_to_stand",
+      "trial": "sit_to_stand_05m_pilot_01",
+      "directory": "20260811_172125_1t2r_cam_sit_to_stand_05m_pilot_01",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed; 2 camera pairs beyond half-frame out of 6860"
+    },
+    "experiment": {
+      "trial": "sit_to_stand_05m_pilot_01",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786465295397366655",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "sit_to_stand",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_CHAIR_20260811.md",
+      "chair_center_xyz_m": "-1.250 2.165 0.500",
+      "chair_orientation": "seat front toward node3 camera; back toward node2",
+      "chair_seat_height_m": "0.500",
+      "chair_description": "teal fabric armless office chair; black five-caster swivel base",
+      "chair_stability": "five casters immobilized and swivel orientation fixed before collection",
+      "started_at": "20260811_172125"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:22:55.156415+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6860,
+      "node1_match_ratio": 0.9920462762111352,
+      "node3_match_ratio": 0.9916160740098294,
+      "unmatched_node1": 55,
+      "unmatched_node3": 58,
+      "node3_minus_node1_system_ns_median": 680874.0,
+      "node3_minus_node1_system_ns_mad": 38596.5,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6860,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6860,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10695,
+        "target_packets": 6915,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465296660359281,
+        "system_ns_end": 1786465331642466710,
+        "utc_start": "2026-08-11T16:21:36.660359+00:00",
+        "utc_end": "2026-08-11T16:22:11.642467+00:00"
+      },
+      "node3": {
+        "all_frames": 10739,
+        "target_packets": 6918,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465296661022302,
+        "system_ns_end": 1786465331643138125,
+        "utc_start": "2026-08-11T16:21:36.661022+00:00",
+        "utc_end": "2026-08-11T16:22:11.643138+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 6,
+        "pair_abs_dt_median_ns": 8280603,
+        "pair_abs_dt_p95_ns": 16032354,
+        "pair_abs_dt_max_ns": 16669637,
+        "pairs_beyond_half_frame": 2,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48450742,
+    "aligned_csi_sha256": "5418f4e26a5bba9b61ad6a87de7094229f9b29b756f26fe2efdd0174dd9f03ef"
+  },
+  {
+    "manifest": {
+      "class": "sit_to_stand",
+      "trial": "sit_to_stand_05m_pilot_02",
+      "directory": "20260811_172555_1t2r_cam_sit_to_stand_05m_pilot_02",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed"
+    },
+    "experiment": {
+      "trial": "sit_to_stand_05m_pilot_02",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786465565129039619",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "sit_to_stand",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_CHAIR_20260811.md",
+      "chair_center_xyz_m": "-1.250 2.165 0.500",
+      "chair_orientation": "seat front toward node3 camera; back toward node2",
+      "chair_seat_height_m": "0.500",
+      "chair_description": "teal fabric armless office chair; black five-caster swivel base",
+      "chair_stability": "five casters immobilized and swivel orientation fixed before collection",
+      "started_at": "20260811_172555"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:27:24.824105+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6864,
+      "node1_match_ratio": 0.9920508744038156,
+      "node3_match_ratio": 0.9916209188095926,
+      "unmatched_node1": 55,
+      "unmatched_node3": 58,
+      "node3_minus_node1_system_ns_median": 834419.0,
+      "node3_minus_node1_system_ns_mad": 28510.0,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6864,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6864,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10374,
+        "target_packets": 6919,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465566409300762,
+        "system_ns_end": 1786465601390312639,
+        "utc_start": "2026-08-11T16:26:06.409301+00:00",
+        "utc_end": "2026-08-11T16:26:41.390313+00:00"
+      },
+      "node3": {
+        "all_frames": 10275,
+        "target_packets": 6922,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465566410132691,
+        "system_ns_end": 1786465601391122743,
+        "utc_start": "2026-08-11T16:26:06.410133+00:00",
+        "utc_end": "2026-08-11T16:26:41.391123+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1502,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 234,
+        "pair_abs_dt_median_ns": 8472919,
+        "pair_abs_dt_p95_ns": 15830364,
+        "pair_abs_dt_max_ns": 16574970,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48514926,
+    "aligned_csi_sha256": "a45acaa8d894bd86001428259aafb0a8a87fca5806d30535521d634e19a86d22"
+  },
+  {
+    "manifest": {
+      "class": "sit_to_stand",
+      "trial": "sit_to_stand_05m_pilot_03",
+      "directory": "20260811_172958_1t2r_cam_sit_to_stand_05m_pilot_03",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "tx_duration_s": "35",
+      "valid": "yes",
+      "role": "main",
+      "notes": "passed; initial depth warm-up does not overlap action"
+    },
+    "experiment": {
+      "trial": "sit_to_stand_05m_pilot_03",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786465808428991173",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "sit_to_stand",
+      "layout_id": "5m_equilateral_chair_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_CHAIR_20260811.md",
+      "chair_center_xyz_m": "-1.250 2.165 0.500",
+      "chair_orientation": "seat front toward node3 camera; back toward node2",
+      "chair_seat_height_m": "0.500",
+      "chair_description": "teal fabric armless office chair; black five-caster swivel base",
+      "chair_stability": "five casters immobilized and swivel orientation fixed before collection",
+      "started_at": "20260811_172958"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T16:31:28.297290+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6873,
+      "node1_match_ratio": 0.9930645860424794,
+      "node3_match_ratio": 0.9910598413842826,
+      "unmatched_node1": 48,
+      "unmatched_node3": 62,
+      "node3_minus_node1_system_ns_median": 889553,
+      "node3_minus_node1_system_ns_mad": 38133,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6873,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6873,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 10278,
+        "target_packets": 6921,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465809680291358,
+        "system_ns_end": 1786465844657743990,
+        "utc_start": "2026-08-11T16:30:09.680291+00:00",
+        "utc_end": "2026-08-11T16:30:44.657744+00:00"
+      },
+      "node3": {
+        "all_frames": 10345,
+        "target_packets": 6935,
+        "duplicate_keys": 0,
+        "system_ns_start": 1786465809681186762,
+        "system_ns_end": 1786465844658583102,
+        "utc_start": "2026-08-11T16:30:09.681187+00:00",
+        "utc_end": "2026-08-11T16:30:44.658583+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": 147,
+        "pair_abs_dt_median_ns": 7970701,
+        "pair_abs_dt_p95_ns": 15854628,
+        "pair_abs_dt_max_ns": 16628301,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48550073,
+    "aligned_csi_sha256": "e0d7faff539ea1d6cdf224bd1b463e938cb8b47463700337832a146be15986a8"
+  },
+  {
+    "manifest": {
+      "class": "leg_lift",
+      "trial": "leg_lift_05m_pilot_02",
+      "directory": "20260811_164958_1t2r_cam_leg_lift_05m_pilot_02",
+      "layout_id": "5m_equilateral_20260811",
+      "tx_duration_s": "35",
+      "valid": "no",
+      "role": "excluded",
+      "notes": "left wooden door open; raw data retained locally"
+    },
+    "experiment": {
+      "trial": "leg_lift_05m_pilot_02",
+      "mode": "1t2r_cam",
+      "tx_duration_s": "35",
+      "rx_duration_s": "50",
+      "tx_expected_packets": "7000",
+      "tx_launch_system_ns": "1786463408544390274",
+      "tx_rf_interface": "mon1",
+      "frequency_mhz": "2412",
+      "txpower_dbm_reported": "0.00",
+      "txpower_control": "AX210_firmware_regulatory",
+      "rx_gain_mode": "AX210 firmware AGC, numeric gain not exposed",
+      "local_voice_protocol": "action_5_20_10",
+      "action_label": "leg_lift",
+      "layout_id": "5m_equilateral_20260811",
+      "node1_xyz_m": "-5.000 0.000 1.000",
+      "node2_xyz_m": "-2.500 4.330 1.000",
+      "node3_xyz_m": "0.000 0.000 1.000",
+      "camera_xyz_m": "0.000 0.000 1.000",
+      "camera_orientation": "from node3 toward node2",
+      "layout_reference": "../LAYOUT_05M_EQUILATERAL_20260811.md",
+      "started_at": "20260811_164958"
+    },
+    "alignment": {
+      "generated_at_utc": "2026-08-11T15:51:28.368992+00:00",
+      "alignment_key": [
+        "source_mac",
+        "sequence",
+        "fragment",
+        "task_id"
+      ],
+      "matched_packets": 6884,
+      "node1_match_ratio": 0.9929323525169479,
+      "node3_match_ratio": 0.9919308357348703,
+      "unmatched_node1": 49,
+      "unmatched_node3": 56,
+      "node3_minus_node1_system_ns_median": 748230.0,
+      "node3_minus_node1_system_ns_mad": 37870.0,
+      "node3_non_monotonic_steps": 0,
+      "warnings": [
+        "duplicate keys were paired in receiver arrival order"
+      ],
+      "data_subcarriers": 234,
+      "pilot_subcarriers_removed": [
+        6,
+        32,
+        74,
+        100,
+        141,
+        167,
+        209,
+        235
+      ],
+      "aligned_shapes": {
+        "node1": [
+          6884,
+          242,
+          2,
+          1
+        ],
+        "node3": [
+          6884,
+          242,
+          2,
+          1
+        ]
+      },
+      "node1": {
+        "all_frames": 9969,
+        "target_packets": 6933,
+        "duplicate_keys": 1,
+        "system_ns_start": 1786463409820982934,
+        "system_ns_end": 1786463444802760703,
+        "utc_start": "2026-08-11T15:50:09.820983+00:00",
+        "utc_end": "2026-08-11T15:50:44.802761+00:00"
+      },
+      "node3": {
+        "all_frames": 10023,
+        "target_packets": 6940,
+        "duplicate_keys": 1,
+        "system_ns_start": 1786463409821647268,
+        "system_ns_end": 1786463444803438986,
+        "utc_start": "2026-08-11T15:50:09.821647+00:00",
+        "utc_end": "2026-08-11T15:50:44.803439+00:00"
+      },
+      "camera": {
+        "host_node": "node3",
+        "reference_receiver": "node3",
+        "depth_frames": 1501,
+        "depth_measured_fps": 30.0,
+        "depth_sequence_gaps": 0,
+        "clock_offset_drift_ns": -29,
+        "pair_abs_dt_median_ns": 8305110,
+        "pair_abs_dt_p95_ns": 15830879,
+        "pair_abs_dt_max_ns": 16662795,
+        "pairs_beyond_half_frame": 0,
+        "calibration": {
+          "aligned_to": "CAM_A",
+          "width": 640,
+          "height": 360,
+          "fx": 381.4918212890625,
+          "fy": 381.4918212890625,
+          "cx": 317.6171875,
+          "cy": 186.96221923828125,
+          "intrinsic_matrix": [
+            [
+              381.4918212890625,
+              0.0,
+              317.6171875
+            ],
+            [
+              0.0,
+              381.4918212890625,
+              186.96221923828125
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "distortion": [
+            -2.9987056255340576,
+            18.263214111328125,
+            0.0008729132241569459,
+            0.0007392574334517121,
+            1.0275627374649048,
+            -2.842392921447754,
+            17.91729736328125,
+            4.75147819519043,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "depth_unit": "millimeter",
+          "stereo_baseline_cm": 7.500000476837158
+        }
+      }
+    },
+    "aligned_csi_size_bytes": 48608164,
+    "aligned_csi_sha256": "9732433107d47384b446bf17cb9fd98a3847d6bdb50dffeb1508b1da37d5e79a"
+  }
+]
