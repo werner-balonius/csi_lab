@@ -30,3 +30,23 @@ BATCH_GAP=10         # 批量采集两组之间的准备时间
 
 # ---- 其他 ----
 NO_RESTORE=0         # 1 = 采集后不恢复 Wi-Fi
+
+# ---- 可选：本地语音动作协议 ----
+# LOCAL_VOICE_PROTOCOL=action_5_20_10
+# LOCAL_VOICE_ACTION=walk_link2  # walk_link2 / arm_wave / leg_lift / sit_to_stand
+
+# ---- 可选：固定布局元数据 ----
+# LAYOUT_ID=5m_equilateral_20260811
+# NODE1_XYZ_M="-5.000 0.000 1.000"
+# NODE2_XYZ_M="-2.500 4.330 1.000"
+# NODE3_XYZ_M="0.000 0.000 1.000"
+# CAMERA_XYZ_M="0.000 0.000 1.000"
+# CAMERA_ORIENTATION="from node3 toward node2"
+# LAYOUT_REFERENCE="docs/experiments/20260811_pilot/layout_no_chair.md"
+
+# 座椅布局时再设置；无座椅布局留空。
+# CHAIR_CENTER_XYZ_M="-1.250 2.165 0.500"
+# CHAIR_ORIENTATION="seat front toward node3 camera; back toward node2"
+# CHAIR_SEAT_HEIGHT_M="0.500"
+# CHAIR_DESCRIPTION="teal fabric armless office chair; black five-caster swivel base"
+# CHAIR_STABILITY="five casters immobilized and swivel orientation fixed"

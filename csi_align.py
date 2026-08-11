@@ -59,6 +59,11 @@ class Packet:
     tx_id: int | None
     rx_timestamp: int | None
     system_ns: int | None
+    noise_floor: int | None
+    rssi: int | None
+    rssi_ctl0: int | None
+    rssi_ctl1: int | None
+    rssi_ctl2: int | None
 
     @property
     def key(self) -> tuple[str, int, int, int] | None:
@@ -92,6 +97,11 @@ def u32(data: bytes, offset: int, label: str) -> int:
 def u64(data: bytes, offset: int, label: str) -> int:
     need(data, offset, 8, label)
     return struct.unpack_from("<Q", data, offset)[0]
+
+
+def i8(data: bytes, offset: int, label: str) -> int:
+    need(data, offset, 1, label)
+    return struct.unpack_from("<b", data, offset)[0]
 
 
 def mac(raw: bytes) -> str:
@@ -145,6 +155,11 @@ def parse_record(data: bytes, frame_index: int) -> list[Packet]:
 
     rx_timestamp = None
     system_ns = None
+    noise_floor = None
+    rssi = None
+    rssi_ctl0 = None
+    rssi_ctl1 = None
+    rssi_ctl2 = None
     for _ in range(number_segments):
         name, version, payload_offset, total = parse_segment(data, offset)
         if name == "RxSBasic":
@@ -152,6 +167,16 @@ def parse_record(data: bytes, frame_index: int) -> list[Packet]:
             if version >= 4:
                 value = u64(data, payload_offset + 10, "RxSBasic system_ns")
                 system_ns = value or None
+                # v4/v5 在 timestamp 后新增 system_ns。旧 CSIKit 的 parseV3
+                # 没有跳过这 8 字节，会把后续 RSSI 错读成近似常量。
+                rssi_offset = payload_offset + 35
+            else:
+                rssi_offset = payload_offset + 27
+            noise_floor = i8(data, rssi_offset, "RxSBasic noise floor")
+            rssi = i8(data, rssi_offset + 1, "RxSBasic RSSI")
+            rssi_ctl0 = i8(data, rssi_offset + 2, "RxSBasic RSSI ctl0")
+            rssi_ctl1 = i8(data, rssi_offset + 3, "RxSBasic RSSI ctl1")
+            rssi_ctl2 = i8(data, rssi_offset + 4, "RxSBasic RSSI ctl2")
         offset += total
 
     packets: list[Packet] = []
@@ -182,6 +207,11 @@ def parse_record(data: bytes, frame_index: int) -> list[Packet]:
                 tx_id=tx_id,
                 rx_timestamp=rx_timestamp,
                 system_ns=system_ns,
+                noise_floor=noise_floor,
+                rssi=rssi,
+                rssi_ctl0=rssi_ctl0,
+                rssi_ctl1=rssi_ctl1,
+                rssi_ctl2=rssi_ctl2,
             )
         )
     return packets
@@ -273,6 +303,12 @@ def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
         "node1_system_ns",
         "node3_system_ns",
         "node3_minus_node1_system_ns",
+        "node1_rssi",
+        "node3_rssi",
+        "node1_rssi_ctl0",
+        "node1_rssi_ctl1",
+        "node3_rssi_ctl0",
+        "node3_rssi_ctl1",
     ]
     with path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
@@ -296,6 +332,12 @@ def write_csv(path: Path, matches: list[tuple[Packet, Packet]]) -> None:
                     "node1_system_ns": first.system_ns,
                     "node3_system_ns": second.system_ns,
                     "node3_minus_node1_system_ns": delta,
+                    "node1_rssi": first.rssi,
+                    "node3_rssi": second.rssi,
+                    "node1_rssi_ctl0": first.rssi_ctl0,
+                    "node1_rssi_ctl1": first.rssi_ctl1,
+                    "node3_rssi_ctl0": second.rssi_ctl0,
+                    "node3_rssi_ctl1": second.rssi_ctl1,
                 }
             )
 
@@ -457,6 +499,34 @@ def export_npz(
         "task_id": np.asarray([pair[0].task_id for pair in matches], dtype=np.uint16),
         "node1_system_ns": np.asarray(node1_ns, dtype=np.uint64),
         "node3_system_ns": np.asarray(node3_ns, dtype=np.uint64),
+        "node1_rssi": np.asarray(
+            [pair[0].rssi if pair[0].rssi is not None else -32768 for pair in matches],
+            dtype=np.int16,
+        ),
+        "node3_rssi": np.asarray(
+            [pair[1].rssi if pair[1].rssi is not None else -32768 for pair in matches],
+            dtype=np.int16,
+        ),
+        "node1_rssi_ctl": np.asarray(
+            [
+                [
+                    pair[0].rssi_ctl0 if pair[0].rssi_ctl0 is not None else -32768,
+                    pair[0].rssi_ctl1 if pair[0].rssi_ctl1 is not None else -32768,
+                ]
+                for pair in matches
+            ],
+            dtype=np.int16,
+        ),
+        "node3_rssi_ctl": np.asarray(
+            [
+                [
+                    pair[1].rssi_ctl0 if pair[1].rssi_ctl0 is not None else -32768,
+                    pair[1].rssi_ctl1 if pair[1].rssi_ctl1 is not None else -32768,
+                ]
+                for pair in matches
+            ],
+            dtype=np.int16,
+        ),
     }
 
     # 导频剔除版本：模型输入应当用这个，242 列仅供回溯
