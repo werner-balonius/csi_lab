@@ -1,16 +1,19 @@
 # csi_lab
 
 Person-in-WiFi-3D 实验的采集编排脚本：1-Tx-2-Rx 的 Wi-Fi CSI 采集，
-配合 OAK-D 深度相机提供 3D 姿态真值。
+配合 OAK-D 深度相机采集同步 RGB-D 监督数据。当前尚未生成经过验证的 3D 骨骼标签。
 
 Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScenes + Intel AX210）。
 
 > **接手前先读 [`HANDOFF.md`](HANDOFF.md)** —— 项目交接文档，含实验设计、
 > 已验证成果、已推翻的结论、踩过的坑。
 >
-> **当前头号问题（2026-08-06）**：CSI 对人体遮挡几乎无响应 ——
-> 人静站链路中点 45 秒，node1 幅度仅降 2.6%。调整 node1 天线后改善到 +3.6%，
-> 仍不足以支撑姿态估计。**解决前采到的 `walk_*` 数据都是无效样本**。
+> **当前状态（2026-08-07）**：重新布置 5 m 场地后，Link2 人体响应已经出现。
+> 两个静站窗在 node3 重复得到 +3.06% / +2.92%；走动时 node3 RSSI 动态标准差为
+> 空场的 2.10×，node1 对照为 0.82×，node3 两根接收链的 100 ms CSI
+> 子载波变化能量为 1.47× / 1.45×。这说明新布局的 Link2 **诊断门控通过**，
+> 但两次空场仍有 2.57% / 3.16% 的慢漂，且走动试验没有完整末尾空场，
+> 因此暂不开始批量正式采集。RSSI 只作为检测/分段和基线特征，不替代完整 CSI。
 > 详见 HANDOFF.md §0.00。
 
 ```
@@ -19,7 +22,7 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
        /          \      每条链路上的人体运动会扰动 CSI
       /            \
  node1 (Rx1)    node3 (Rx2)
-   + OAK-D 相机（姿态真值）
+                   + OAK-D 相机（当前宿主，RGB-D 监督数据）
 ```
 
 ## 一次采集做了什么
@@ -38,7 +41,7 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 
 | 文件 | 说明 |
 |---|---|
-| `aligned/aligned_csi.npz` | 训练直接用的数据 |
+| `aligned/aligned_csi.npz` | 对齐后的分析/训练候选输入；仍需质量标签和骨骼监督 |
 | `aligned/alignment_report.json` | 匹配率、时钟偏差、相机配对等指标 |
 | `aligned/aligned_packets.csv` | 逐包对齐表 |
 | `node1.csi` / `node3.csi` | PicoScenes 原始 |
@@ -50,6 +53,17 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 已剔除 8 个导频子载波；`depth_frame_index` 给出每个包对应的深度帧号。
 
 ## 实验流程
+
+### 当前批量前门控
+
+不要直接运行 `phase_c_*.txt` 批量任务。先保持新布局不动并完成：
+
+1. 固定天线、支架和线缆，显式设置并记录发射功率；接收增益若可控也必须记录。
+2. 运行一次正式空场，确认两端 5 秒分段均值没有不可解释的慢漂。
+3. 运行一次 Link2 walk，动作窗必须包含约 5 秒前空场、15–20 秒动作和至少 5 秒后空场。
+4. 人工核对彩色/深度时间线；同时比较 RSSI 动态标准差、CSI 子载波变化能量和两条链路的特异性。
+
+只有当前后空场完整、node3 动态响应可重复且 node1 对照没有同步增加时，才进入每类 3 次重复采集。
 
 ### 阶段 C：节点间距对照实验
 
@@ -95,7 +109,7 @@ ffmpeg -i <color.h265> -ss 5 -frames:v 1 /tmp/check.png
 ### 批量采集
 
 ```bash
-CAM_HOST=node1 ./csi_lab.sh batch phase_c_05m.txt
+CAM_HOST=node3 ./csi_lab.sh batch phase_c_05m.txt
 ```
 
 * 单组失败**不会中断批量**，只警告并继续。跑完务必检查有没有失败的组
@@ -176,7 +190,7 @@ done
 
 ```bash
 ./csi_lab.sh check                 # 只预检
-CAM_HOST=node1 ./csi_lab.sh check  # 含相机
+CAM_HOST=node3 ./csi_lab.sh check  # 含当前接在 node3 的相机
 ```
 
 ## 用法
