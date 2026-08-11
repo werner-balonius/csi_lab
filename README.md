@@ -8,13 +8,13 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 > **接手前先读 [`HANDOFF.md`](HANDOFF.md)** —— 项目交接文档，含实验设计、
 > 已验证成果、已推翻的结论、踩过的坑。
 >
-> **当前状态（2026-08-07）**：重新布置 5 m 场地后，Link2 人体响应已经出现。
-> 两个静站窗在 node3 重复得到 +3.06% / +2.92%；走动时 node3 RSSI 动态标准差为
-> 空场的 2.10×，node1 对照为 0.82×，node3 两根接收链的 100 ms CSI
-> 子载波变化能量为 1.47× / 1.45×。这说明新布局的 Link2 **诊断门控通过**，
-> 但两次空场仍有 2.57% / 3.16% 的慢漂，且走动试验没有完整末尾空场，
-> 因此暂不开始批量正式采集。RSSI 只作为检测/分段和基线特征，不替代完整 CSI。
-> 详见 HANDOFF.md §0.00。
+> **当前状态（2026-08-11）**：5 m 小型动作 Pilot 已完成。`empty`、
+> `walk_link2`、`arm_wave`、`leg_lift`、`sit_to_stand` 各 3 条有效主样本，
+> 另有 1 条座椅布局空场；一条木门开启的 `leg_lift` 已保留并排除。
+> `walk_link2` 的 node3 RSSI 动态倍率为 2.43–2.75×，而 `sit_to_stand`
+> 的 RSSI 仅 0.94–0.99×、CSI 天线 0 仍为 1.33–1.47×。当前应暂停扩大采集，
+> 先做 trial 内基线归一化、特征可视化和按 trial 分组的消融。
+> 详见 [`docs/experiments/20260811_pilot/README.md`](docs/experiments/20260811_pilot/README.md)。
 
 ```
         node2 (Tx)
@@ -54,6 +54,13 @@ Mac 作主控，通过有线管理网 SSH 编排三台 Ubuntu 节点（PicoScene
 已剔除 8 个导频子载波；`depth_frame_index` 给出每个包对应的深度帧号。
 
 ## 实验流程
+
+### 2026-08-11 Pilot 之后
+
+Pilot 门控与每类 3 次重复已经完成，不再执行下面旧的“批量前门控”。下一步先运行
+`scripts/export_pilot_features.py` 生成隐私安全的 100 ms 派生特征，并完成
+PCA/UMAP、feature importance 和 RSSI/CSI 消融。只有动作类别在按 trial 分组的
+验证中呈现可重复趋势后，才扩大到更多参与者和布局。
 
 ### 当前批量前门控
 
