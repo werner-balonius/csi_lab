@@ -8,9 +8,20 @@
     可能与前三者携带不同信息。
 
 物理可行性（本平台实测）：
-    包速率 138.1 Hz → Nyquist 69.0 Hz
+    包速率 ~197 Hz → Nyquist ~98 Hz
     λ = 12.44 cm，径向速度 v 对应 fd ≤ 2v/λ
-    人体步速 0.9–1.3 m/s → fd 14–21 Hz，有 3 倍余量，不混叠
+    人体步速 0.9–1.3 m/s → fd 14–21 Hz，有 4.7 倍余量，不混叠
+
+采样率修正（2026-08-24）：
+    此前代码硬编码 duration_s=50.0（metadata 中的**请求**时长），
+    而 trial 实际时长为 34.9 s，导致 fs 被低估 30.2%：
+        6905 / 50.0  = 138.1 Hz  ← 伪值，曾被误记为"实测包速率"
+        6905 / 34.9  = 197.9 Hz  ← 真值
+    三条独立证据确认 ~197 Hz：
+      1. metadata `tx_delay_us=5000` → 标称 200 Hz，实测为其 99%
+      2. 特征表 time_s 跨度 0.0–34.9 s（350 个 100 ms 分箱）
+      3. 匹配率 98.9–99.6%，与 200 Hz 标称一致
+    现改为从特征表 time_s 跨度推导真实时长，不再硬编码。
 
 方法说明：
     多普勒谱用**归一化幅度**的时间变化计算，而非相位。
@@ -20,6 +31,10 @@
 
     使用绝对能量而非能量比值：比值会被低频分母主导，
     实测给出与物理相反的结论（空场 23.2 > 有人 3.0-7.2）。
+
+    ⚠ 本实现取 |H| 的实数 FFT，得到的是**无符号时间频谱能量**，
+    不是复数多普勒谱，因此**无法区分靠近/远离**（符号信息在取模时丢失）。
+    任何涉及运动方向的论证都不能基于本脚本的输出。
 
 用法：
     python3 doppler_position.py [--pca 32]
@@ -36,16 +51,44 @@ import numpy as np
 PILOT_IDX = [6, 32, 74, 100, 141, 167, 209, 235]
 ARCHIVE = os.path.expanduser("~/csi_archive/20260811_pilot")
 CAM_ROOT = os.path.join(ARCHIVE, "node3")
-FS = 138.1          # 实测包速率
+FS = None           # 不再使用固定采样率：逐 trial 由真实时长推导
+BIN_S = 0.1         # 特征表分箱宽度（用于从 time_s 跨度还原时长）
 WIN_S = 2.0         # STFT 窗长
 BAND = (2.0, 25.0)  # 人体运动多普勒带
+
+# numpy 2.0 + macOS Accelerate BLAS 会对正常 matmul 误报
+# divide-by-zero / overflow / invalid（纯随机数据亦可复现，结果全部有限）。
+# 已验证输入无零列、无非有限值，故抑制该伪警告。
+if np.__config__.CONFIG.get("Build Dependencies", {}).get(
+        "blas", {}).get("name") == "accelerate":
+    np.seterr(divide="ignore", over="ignore", invalid="ignore")
 
 TRIALS = {
     "walk_link2_05m_pilot_01": ("20260811_161726", "20260811_161724_walk_link2_05m_pilot_01_cam"),
     "walk_link2_05m_pilot_02": ("20260811_162117", "20260811_162114_walk_link2_05m_pilot_02_cam"),
     "walk_link2_05m_pilot_03": ("20260811_162523", "20260811_162520_walk_link2_05m_pilot_03_cam"),
 }
-EMPTY = ["20260811_160839", "20260811_161230"]
+# 空场对照：前缀 -> 特征表中的 trial 名（用于取真实时长）
+EMPTY = {
+    "20260811_160839": "empty_05m_pilot_02",
+    "20260811_161230": "empty_05m_pilot_03",
+}
+
+
+def trial_durations(features_path):
+    """从特征表还原每个 trial 的真实时长。
+
+    时长 = max(time_s) - min(time_s) + BIN_S
+    （time_s 为分箱左边缘，故补一个分箱宽度）
+    """
+    lo, hi = {}, {}
+    with gzip.open(features_path, "rt") as fh:
+        for r in csv.DictReader(fh):
+            t = float(r["time_s"])
+            k = r["trial"]
+            lo[k] = min(lo.get(k, t), t)
+            hi[k] = max(hi.get(k, t), t)
+    return {k: hi[k] - lo[k] + BIN_S for k in hi}
 
 
 def load_csi(prefix, node="node1"):
@@ -105,7 +148,8 @@ def frame_map(features_path, trial):
     if len(ts) < 10:
         raise ValueError(f"{trial} 样本不足")
     slope, intercept = np.polyfit(np.array(ts), np.array(fr), 1)
-    return slope, intercept, max(ts)
+    # time_s 为分箱左边缘，故时长需补一个分箱宽度
+    return slope, intercept, max(ts) - min(ts) + BIN_S
 
 
 def load_track(cam_dir):
@@ -156,20 +200,29 @@ def main():
     ap.add_argument("--ridge", type=float, default=10.0)
     args = ap.parse_args()
 
+    durs = trial_durations(args.features)
+
     # ---- 存在性检测 ----
     print("=== 存在性：多普勒频带能量（2–25 Hz）===")
     empty_vals = []
-    for p in EMPTY:
+    for p, name in EMPTY.items():
         try:
-            e, _ = band_energy(load_csi(p), 50.0)
+            c = load_csi(p)
         except FileNotFoundError:
             continue
+        d = durs[name]
+        e, _ = band_energy(c, d)
         empty_vals.append(np.median(e))
-        print(f"  空场 {p[-6:]}  中位 {np.median(e):10.1f}")
+        print(f"  空场 {p[-6:]}  中位 {np.median(e):10.1f}   "
+              f"(n={len(c)} dur={d:.1f}s fs={len(c)/d:.1f}Hz)")
     base = float(np.median(empty_vals)) if empty_vals else float("nan")
     for trial, (prefix, _) in TRIALS.items():
-        e, _ = band_energy(load_csi(prefix), 50.0)
-        print(f"  {trial[-8:]}     中位 {np.median(e):10.1f}   {np.median(e)/base:.2f}× 空场")
+        c = load_csi(prefix)
+        d = durs[trial]
+        e, _ = band_energy(c, d)
+        print(f"  {trial[-8:]}     中位 {np.median(e):10.1f}   "
+              f"{np.median(e)/base:.2f}× 空场   "
+              f"(n={len(c)} dur={d:.1f}s fs={len(c)/d:.1f}Hz)")
     print()
 
     # ---- 位置回归 ----
