@@ -1,0 +1,49 @@
+# 空间分辨能力判据实验（2026-08-24）
+# 布局 3m_inline_20260824：node2(Tx) ──3m── node1(Rx1)，node3 置链路外 3m
+#
+# 站位（自 Tx 沿链路量取）：A=0.75m  B=1.50m  C=2.25m
+# 每条 20 s 静止站立，面向 node1，正常呼吸，不做动作。
+# 空场 trial 受试者必须离开整个场地，不是站在旁边。
+#
+# 序列性质（种子 20260821）：
+#   每位置 5 次重复；位置序列 A C B / A B C / A C B / C A B / C A B 无连续重复
+#   空场每 3 条插入一次，用于检测并校正时间漂移
+#
+# 全程不可：重启节点、移动节点或天线、场地内出现第二人
+#
+# 用法：./csi_lab.sh batch batch_20260824_spatial.txt
+# 每组之间有 25 s 准备时间，就位后可按回车提前开始。
+#
+# trial名                 秒数
+
+g_empty_00                20
+
+g_stand_A_r1              20
+g_stand_C_r1              20
+g_stand_B_r1              20
+
+g_empty_01                20
+
+g_stand_A_r2              20
+g_stand_B_r2              20
+g_stand_C_r2              20
+
+g_empty_02                20
+
+g_stand_A_r3              20
+g_stand_C_r3              20
+g_stand_B_r3              20
+
+g_empty_03                20
+
+g_stand_C_r4              20
+g_stand_A_r4              20
+g_stand_B_r4              20
+
+g_empty_04                20
+
+g_stand_C_r5              20
+g_stand_A_r5              20
+g_stand_B_r5              20
+
+g_empty_05                20
