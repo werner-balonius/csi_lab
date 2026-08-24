@@ -36,6 +36,7 @@ NO_RESTORE=0         # 1 = 采集后不恢复 Wi-Fi
 # LOCAL_VOICE_ACTION=walk_link2  # walk_link2 / arm_wave / leg_lift / sit_to_stand
 
 # ---- 可选：固定布局元数据 ----
+# 8-11 pilot 布局（5m 等边三角，带相机）
 # LAYOUT_ID=5m_equilateral_20260811
 # NODE1_XYZ_M="-5.000 0.000 1.000"
 # NODE2_XYZ_M="-2.500 4.330 1.000"
@@ -43,6 +44,25 @@ NO_RESTORE=0         # 1 = 采集后不恢复 Wi-Fi
 # CAMERA_XYZ_M="0.000 0.000 1.000"
 # CAMERA_ORIENTATION="from node3 toward node2"
 # LAYOUT_REFERENCE="docs/experiments/20260811_pilot/layout_no_chair.md"
+
+# 8-24 空间分辨能力判据实验布局（3m 直线链路，不采相机）
+#
+#   node2(Tx) ●━━━━━━━━━━━━━━━━━● node1(Rx1)
+#             0  A(.75) B(1.5) C(2.25) 3m
+#                      ● node3(Rx2) 链路外 3m
+#
+# 链路须 >= 2m：三点等分时间距 = D/4，而菲涅尔直径 ∝ √D，
+#   1m -> 间距 0.25 < 菲涅尔 0.35（重叠）；3m -> 0.75 > 0.61（可分）
+#   另需间距 > 躯干宽 0.4-0.5m，否则相邻两点身体重合。
+# node3 须在链路外 3m：到 A/B/C 距离 3.09/3.00/3.09m（差异 3%），
+#   若仅 1m 则为 1.25/1.00/1.25m（差异 21.4%），空间对照失真。
+#
+# LAYOUT_ID=3m_inline_20260824
+# NODE1_XYZ_M="3.000 0.000 1.000"
+# NODE2_XYZ_M="0.000 0.000 1.000"
+# NODE3_XYZ_M="1.500 3.000 1.000"
+# LAYOUT_REFERENCE="docs/experiments/20260821_spatial_resolvability_design.md"
+# BATCH_GAP=25    # 判据实验需走位站稳，默认 10s 偏紧
 
 # 座椅布局时再设置；无座椅布局留空。
 # CHAIR_CENTER_XYZ_M="-1.250 2.165 0.500"
