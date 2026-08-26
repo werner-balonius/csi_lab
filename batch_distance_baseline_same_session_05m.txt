@@ -1,0 +1,5 @@
+# 5 m empty-room gate in one monitor-mode session.
+# The first capture is RF warm-up only; compare the following two baselines.
+# trial name                               seconds  repetitions
+ds_d05m_rf_warmup_same_session              20       1
+ds_d05m_baseline_same_session               20       2

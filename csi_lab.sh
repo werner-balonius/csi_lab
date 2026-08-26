@@ -35,6 +35,7 @@ RX_B="${RX_B:-node3}"
 CAM_HOST="${CAM_HOST:-}"                 # 留空则不采相机
 CSI_AGENT="${CSI_AGENT:-csi_agent.sh}"   # 必须带 CSI_ 前缀：
                                          # 通用名 AGENT 会被外部环境变量污染
+CSI_CHANNEL="${CSI_CHANNEL:-2412 20}"    # PicoScenes 频率 MHz + 带宽 MHz
 RESULTS="${RESULTS:-$HOME/csi_results}"
 RX_MARGIN="${RX_MARGIN:-15}"             # 接收端比发射端多跑的秒数
 TX_MARGIN="${TX_MARGIN:-5}"              # 覆盖 PicoScenes 启动开销
@@ -77,7 +78,7 @@ die()    { c_red  "[lab] 错误: $*" >&2; exit 1; }
 agent() {
     local host="$1"; shift
     # shellcheck disable=SC2086
-    ssh $SSH_OPTS "$host" "bash \"\$HOME/$CSI_AGENT\" $*"
+    ssh $SSH_OPTS "$host" "CSI_CHANNEL=\"$CSI_CHANNEL\" bash \"\$HOME/$CSI_AGENT\" $*"
 }
 
 usage() {
@@ -92,9 +93,11 @@ usage() {
   CAM_HOST=node3     指定相机宿主（当前现场为 node3）；留空则不采相机
   NO_RESTORE=1       采集后不恢复 Wi-Fi（批量采集内部自动使用）
   TX_NODE / RX_A / RX_B    默认 node2 / node1 / node3
+  CSI_CHANNEL="2462 20"    指定 PicoScenes 频率 MHz 与带宽 MHz
   LOCAL_VOICE_PROTOCOL=action_5_20_10
                     Mac 本地提示：空场 5s、动作/离场约 20s、末尾空场
-  LOCAL_VOICE_ACTION=walk_link2|arm_wave|leg_lift|sit_to_stand
+  LOCAL_VOICE_ACTION=walk_link2|arm_wave|leg_lift|sit_to_stand|auto
+                    auto 根据 distance-boundary trial 名选择静止、运动或金属板提示
 
 批量文件格式（# 开头为注释）:
   # trial名   秒数   重复次数
@@ -198,6 +201,16 @@ kv() { awk -F= -v k="$1" '$1==k{v=substr($0,index($0,"=")+1)} END{print v}' "$2"
 run_trial() {
     local trial="$1" dur="$2"
     local rx_dur=$((dur + RX_MARGIN))
+    local action_label="$LOCAL_VOICE_ACTION"
+    if [ "$action_label" = "auto" ]; then
+        case "$trial" in
+            *_static_*)    action_label="distance_static" ;;
+            *_motion_*)    action_label="distance_motion" ;;
+            *_plate_mid_*) action_label="distance_plate_mid" ;;
+            *_plate_rx_*)  action_label="distance_plate_rx" ;;
+            *)             action_label="none" ;;
+        esac
+    fi
     local mode; mode=$([ -n "$CAM_HOST" ] && echo "1t2r_cam" || echo "1t2r")
     local stamp; stamp=$(date +%Y%m%d_%H%M%S)
     local dest="$RESULTS/${stamp}_${mode}_${trial}"
@@ -240,11 +253,13 @@ run_trial() {
     # agent 返回点实测约比第一个接收包早 0.2 秒。各提示用独立定时器
     # 锚定，避免 say 自身播报时长累积造成动作窗漂移。约第 22 秒提示
     # 最后一次穿越并离场，给参与者约 3 秒退出，确保末尾 5 秒为空场。
-    if [ "$LOCAL_VOICE_PROTOCOL" = "action_5_20_10" ] \
-       || [ "$LOCAL_VOICE_PROTOCOL" = "walk_link2_5_20_5" ]; then
+    if [ "$action_label" != "none" ] \
+       && { [ "$LOCAL_VOICE_PROTOCOL" = "action_5_20_10" ] \
+            || [ "$LOCAL_VOICE_PROTOCOL" = "walk_link2_5_20_5" ]; }; then
         if command -v say >/dev/null 2>&1; then
-            local action_prompt
-            case "$LOCAL_VOICE_ACTION" in
+            local action_prompt end_prompt
+            end_prompt='完成最后一次动作，并立即离开实验区域。'
+            case "$action_label" in
                 walk_link2)
                     action_prompt='开始行走。请在第二条链路中点垂直来回穿越。' ;;
                 arm_wave)
@@ -253,12 +268,22 @@ run_trial() {
                     action_prompt='开始腿部动作。请进入第二条链路中点，面向相机站立，手臂自然保持，左右腿交替抬起。' ;;
                 sit_to_stand)
                     action_prompt='开始坐下起立。请面向相机，连续完成坐下和起立动作。' ;;
+                distance_static)
+                    action_prompt='请进入本条试验指定的地面标记，面向第一接收节点，静止站立并正常呼吸。' ;;
+                distance_motion)
+                    action_prompt='请进入本条试验指定的地面标记，面向第一接收节点，持续原地踏步，双臂自然摆动。' ;;
+                distance_plate_mid)
+                    action_prompt='请把金属板垂直放到主链路中点，中心对齐天线高度，然后立即离开实验区域。'
+                    end_prompt='请立即移走金属板，并离开实验区域。' ;;
+                distance_plate_rx)
+                    action_prompt='请把金属板放到第一接收节点天线前方五厘米处，然后立即离开实验区域。'
+                    end_prompt='请立即移走金属板，并离开实验区域。' ;;
                 *)
                     action_prompt='开始动作。请按计划执行。' ;;
             esac
             say -v Tingting '记录已经开始。请保持空场，听到开始动作后再进入。' >/dev/null 2>&1 &
             ( sleep 5.2; say -v Tingting "$action_prompt" ) >/dev/null 2>&1 &
-            ( sleep 22; say -v Tingting '完成最后一次动作，并立即离开实验区域。' ) >/dev/null 2>&1 &
+            ( sleep 22; say -v Tingting "$end_prompt" ) >/dev/null 2>&1 &
             ( sleep 25.2; say -v Tingting '请保持空场，不要进入。' ) >/dev/null 2>&1 &
         else
             warn "LOCAL_VOICE_PROTOCOL 已设置，但 Mac 上找不到 say"
@@ -356,7 +381,7 @@ txpower_dbm_reported: ${tx_power:-unknown}
 txpower_control: ${tx_power_control:-unknown}
 rx_gain_mode: AX210 firmware AGC, numeric gain not exposed
 local_voice_protocol: ${LOCAL_VOICE_PROTOCOL:-none}
-action_label: ${LOCAL_VOICE_ACTION:-none}
+action_label: ${action_label:-none}
 layout_id: ${LAYOUT_ID:-unknown}
 node1_xyz_m: ${NODE1_XYZ_M:-unknown}
 node2_xyz_m: ${NODE2_XYZ_M:-unknown}

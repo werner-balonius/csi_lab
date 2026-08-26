@@ -36,7 +36,7 @@ DUR="${3:-30}"
 TX_DURATION="${2:-30}"
 
 PHY=1
-CHANNEL="2412 20"
+CHANNEL="${CSI_CHANNEL:-2412 20}"
 BCAST="FF:FF:FF:FF:FF:FF"          # 多接收端必须广播，单播会导致只有一台收到
 PRESET="TX_CBW_20_HESU"
 DELAY_US=5000                        # 200 pkt/s

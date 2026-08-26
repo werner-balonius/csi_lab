@@ -1,0 +1,21 @@
+# 1 m distance boundary: deterministic random order, seed 202608261.
+# Trial protocol: 5 s empty, enter, 13 s scored event (8-21 s), leave at 22 s,
+# then empty again. Offset is along -Y, away from fixed node3 at (0, 3, 1).
+ds_d01m_off00_motion_r1 35
+ds_d01m_off05_static_r3 35
+ds_d01m_off10_static_r1 35
+ds_d01m_off00_motion_r3 35
+ds_d01m_off10_static_r3 35
+ds_d01m_off00_static_r2 35
+ds_d01m_off05_static_r1 35
+ds_d01m_off05_motion_r2 35
+ds_d01m_off10_motion_r3 35
+ds_d01m_off05_motion_r1 35
+ds_d01m_off05_static_r2 35
+ds_d01m_off10_static_r2 35
+ds_d01m_off05_motion_r3 35
+ds_d01m_off00_motion_r2 35
+ds_d01m_off10_motion_r1 35
+ds_d01m_off00_static_r1 35
+ds_d01m_off10_motion_r2 35
+ds_d01m_off00_static_r3 35

@@ -1,0 +1,2 @@
+ds_d05m_plate_rx_r1 35
+ds_d05m_plate_mid_r1 35
