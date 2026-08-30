@@ -257,8 +257,16 @@ run_trial() {
        && { [ "$LOCAL_VOICE_PROTOCOL" = "action_5_20_10" ] \
             || [ "$LOCAL_VOICE_PROTOCOL" = "walk_link2_5_20_5" ]; }; then
         if command -v say >/dev/null 2>&1; then
-            local action_prompt end_prompt
+            local action_prompt end_prompt pos_label
             end_prompt='完成最后一次动作，并立即离开实验区域。'
+            # 距离实验的站位由 trial 名给出，必须在语音里念出来：
+            # 批次顺序由固定随机种子打乱，参与者在场内无法自行判断该站哪个标记。
+            case "$trial" in
+                *_off00_*) pos_label='零米标记，也就是主链路中点，' ;;
+                *_off05_*) pos_label='零点五米标记，' ;;
+                *_off10_*) pos_label='一米标记，' ;;
+                *)         pos_label='本条试验指定的地面标记，' ;;
+            esac
             case "$action_label" in
                 walk_link2)
                     action_prompt='开始行走。请在第二条链路中点垂直来回穿越。' ;;
@@ -269,9 +277,9 @@ run_trial() {
                 sit_to_stand)
                     action_prompt='开始坐下起立。请面向相机，连续完成坐下和起立动作。' ;;
                 distance_static)
-                    action_prompt='请进入本条试验指定的地面标记，面向第一接收节点，静止站立并正常呼吸。' ;;
+                    action_prompt="请进入${pos_label}面向第一接收节点，静止站立并正常呼吸。" ;;
                 distance_motion)
-                    action_prompt='请进入本条试验指定的地面标记，面向第一接收节点，持续原地踏步，双臂自然摆动。' ;;
+                    action_prompt="请进入${pos_label}面向第一接收节点，持续原地踏步，双臂自然摆动。" ;;
                 distance_plate_mid)
                     action_prompt='请把金属板垂直放到主链路中点，中心对齐天线高度，然后立即离开实验区域。'
                     end_prompt='请立即移走金属板，并离开实验区域。' ;;
