@@ -120,11 +120,17 @@ def discover(results: str, date: str | None) -> tuple[list[dict], list[dict]]:
         m = TRIAL_RE.search(name)
         c = CONTROL_RE.search(name)
         if m:
+            if not os.path.isfile(os.path.join(path, "aligned", "aligned_csi.npz")):
+                print(f"skip incomplete human trial: {name}")
+                continue
             x = m.groupdict()
             x.update(path=path, trial=name, distance=int(x["distance"]),
                      offset=int(x["offset"]) / 10, rep=int(x["rep"]))
             trials.append(x)
         elif c:
+            if not os.path.isfile(os.path.join(path, "aligned", "aligned_csi.npz")):
+                print(f"skip incomplete control: {name}")
+                continue
             x = c.groupdict()
             x.update(path=path, trial=name, distance=int(x["distance"]),
                      rep=int(x["rep"]))
