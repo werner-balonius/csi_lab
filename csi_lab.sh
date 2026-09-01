@@ -266,7 +266,18 @@ run_trial() {
                 *_off00_*) pos_label='零米标记，也就是主链路中点，' ;;
                 *_off05_*) pos_label='零点五米标记，' ;;
                 *_off10_*) pos_label='一米标记，' ;;
+                *_posL_*)  pos_label='左侧 L 标记，' ;;
+                *_posC_*)  pos_label='中心 C 标记，' ;;
+                *_posR_*)  pos_label='右侧 R 标记，' ;;
                 *)         pos_label='本条试验指定的地面标记，' ;;
+            esac
+            # 朝向随布局而变：多接收端+相机布局要求面向相机，
+            # 单链路距离实验要求面向第一接收节点。朝向影响人体散射截面，不可混用。
+            local facing_label
+            case "$trial" in
+                *_facen1_*)    facing_label='面向第一接收节点' ;;  # 朝向对照，优先级最高
+                *eq4m*|*_mr_*) facing_label='面向相机' ;;
+                *)             facing_label='面向第一接收节点' ;;
             esac
             case "$action_label" in
                 walk_link2)
@@ -278,9 +289,9 @@ run_trial() {
                 sit_to_stand)
                     action_prompt='开始坐下起立。请面向相机，连续完成坐下和起立动作。' ;;
                 distance_static)
-                    action_prompt="请进入${pos_label}面向第一接收节点，静止站立并正常呼吸。" ;;
+                    action_prompt="请进入${pos_label}${facing_label}，静止站立并正常呼吸。" ;;
                 distance_motion)
-                    action_prompt="请进入${pos_label}面向第一接收节点，持续原地踏步，双臂自然摆动。" ;;
+                    action_prompt="请进入${pos_label}${facing_label}，持续原地踏步，双臂自然摆动。" ;;
                 distance_plate_mid)
                     action_prompt='请把金属板垂直放到主链路中点，中心对齐天线高度，然后立即离开实验区域。'
                     end_prompt='请立即移走金属板，并离开实验区域。' ;;
