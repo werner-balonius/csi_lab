@@ -204,6 +204,7 @@ run_trial() {
     local action_label="$LOCAL_VOICE_ACTION"
     if [ "$action_label" = "auto" ]; then
         case "$trial" in
+            *_fov_lcr_*)   action_label="multirx_fov" ;;
             *_static_*)    action_label="distance_static" ;;
             *_motion_*)    action_label="distance_motion" ;;
             *_plate_mid_*) action_label="distance_plate_mid" ;;
@@ -289,10 +290,20 @@ run_trial() {
                 *)
                     action_prompt='开始动作。请按计划执行。' ;;
             esac
-            say -v Tingting '记录已经开始。请保持空场，听到开始动作后再进入。' >/dev/null 2>&1 &
-            ( sleep 5.2; say -v Tingting "$action_prompt" ) >/dev/null 2>&1 &
-            ( sleep 22; say -v Tingting "$end_prompt" ) >/dev/null 2>&1 &
-            ( sleep 25.2; say -v Tingting '请保持空场，不要进入。' ) >/dev/null 2>&1 &
+            if [ "$action_label" = "multirx_fov" ]; then
+                say -v Tingting '视野验证开始。请在场外等待第一个站位提示。' >/dev/null 2>&1 &
+                ( sleep 15.2; say -v Tingting '请站到最靠近第一接收节点的左标记，面向相机，保持静止。不要继续向相机走。' ) >/dev/null 2>&1 &
+                ( sleep 30.2; say -v Tingting '请移动到中间标记，面向相机，保持静止。' ) >/dev/null 2>&1 &
+                ( sleep 45.2; say -v Tingting '请移动到最靠近相机和第三节点的右标记，面向相机，保持静止。不要越过标记。' ) >/dev/null 2>&1 &
+                ( sleep 60.2; say -v Tingting '请留在右标记，缓慢抬起双臂一次，然后放下，并继续站在标记上。' ) >/dev/null 2>&1 &
+                ( sleep 70.2; say -v Tingting '验证动作完成，请立即离开实验区域并关好门。' ) >/dev/null 2>&1 &
+                ( sleep 80.2; say -v Tingting '请保持空场，不要进入。' ) >/dev/null 2>&1 &
+            else
+                say -v Tingting '记录已经开始。请保持空场，听到开始动作后再进入。' >/dev/null 2>&1 &
+                ( sleep 5.2; say -v Tingting "$action_prompt" ) >/dev/null 2>&1 &
+                ( sleep 22; say -v Tingting "$end_prompt" ) >/dev/null 2>&1 &
+                ( sleep 25.2; say -v Tingting '请保持空场，不要进入。' ) >/dev/null 2>&1 &
+            fi
         else
             warn "LOCAL_VOICE_PROTOCOL 已设置，但 Mac 上找不到 say"
         fi
