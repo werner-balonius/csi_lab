@@ -266,6 +266,8 @@ run_trial() {
                 *_off00_*) pos_label='零米标记，也就是主链路中点，' ;;
                 *_off05_*) pos_label='零点五米标记，' ;;
                 *_off10_*) pos_label='一米标记，' ;;
+                *_posM1_*) pos_label='左侧 M1 标记，也就是 node2 到 node1 的链路中点，' ;;
+                *_posM3_*) pos_label='右侧 M3 标记，也就是 node2 到 node3 的链路中点，' ;;
                 *_posL_*)  pos_label='左侧 L 标记，' ;;
                 *_posC_*)  pos_label='中心 C 标记，' ;;
                 *_posR_*)  pos_label='右侧 R 标记，' ;;
