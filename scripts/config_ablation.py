@@ -46,7 +46,16 @@ import sys
 
 import numpy as np
 
-BASE_END, EV_START, EV_END, POST_START, POST_END = 5.0, 8.0, 21.0, 24.0, 34.0
+# 窗口依据 09-01 32 条人体 trial 的逐秒剖面实测确定（见
+# docs/experiments/20260902_midpoint_repetition_n6.md §5）：
+#   0-3s 基线参考 / 3-5s 入场前空场 / 6-7s 进场 / 13-21s 事件平台
+#   21-23s 人仍在场（协议写的 22s 离场不成立）/ 24-28s 离场暂态
+#   29-31s 沉降 / 32-34s 基本回落
+# 初版曾取 24-34s 作阴性，整段跨着离场暂态，阴性对照 AUC 得 0.083（应为 0.5）。
+BASE_END = 3.0
+PRE_NEG  = (3.0, 5.0)     # 入场前空场，阴性
+EV_WIN   = (13.0, 21.0)   # 事件平台，阳性（避开 8-13s 爬升段）
+POST_NEG = (32.0, 34.0)   # 完全沉降后，阴性
 MIN_PKTS_PER_SEC = 20          # 5 pkt/s 档时每秒仅约 5 包，见 min_frac
 NODES = ("node1", "node3")
 
@@ -133,15 +142,19 @@ def score(csi_sel: np.ndarray, t: np.ndarray, lag: int, min_frac: float):
 
 
 def bucket(rows: dict):
-    """按窗口归类：阳性=事件段，阴性=离场后；阴性对照=离场后对半切。"""
+    """阳性=事件平台；阴性=入场前 + 完全沉降后。
+
+    阴性对照取「入场前 vs 沉降后」—— 两者同为空场但相隔约 30 秒，
+    因此该对照直接量化**漂移本身**贡献了多少可分性，比对半切更严格。
+    """
     pos, neg, ctl_p, ctl_n = [], [], [], []
-    mid = (POST_START + POST_END) / 2
     for sec, v in rows.items():
-        if EV_START <= sec < EV_END:
+        if EV_WIN[0] <= sec < EV_WIN[1]:
             pos.append(v)
-        elif POST_START <= sec < POST_END:
-            neg.append(v)
-            (ctl_p if sec >= mid else ctl_n).append(v)
+        elif PRE_NEG[0] <= sec < PRE_NEG[1]:
+            neg.append(v); ctl_n.append(v)
+        elif POST_NEG[0] <= sec < POST_NEG[1]:
+            neg.append(v); ctl_p.append(v)
     return pos, neg, ctl_p, ctl_n
 
 
@@ -153,8 +166,8 @@ def main() -> int:
     ap.add_argument("--out", default="docs/experiments/ablation")
     args = ap.parse_args()
 
-    dirs = sorted(d for d in glob.glob(os.path.join(args.results, f"{args.session}_*"))
-                  if re.search(r"_(static|motion)_r\d+$", d)
+    dirs = sorted(d for d in glob.glob(os.path.join(args.results, f"{args.session}*"))
+                  if re.search(r"_(static|motion)_r\d+(_\d+)?$", d)
                   and "INVALID" not in d)
     if not dirs:
         print("没有匹配的人体 trial", file=sys.stderr)
