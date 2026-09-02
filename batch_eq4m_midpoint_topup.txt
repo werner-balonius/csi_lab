@@ -1,0 +1,60 @@
+# ⚠⚠ 起批必须用这条完整命令，缺一个变量就废一批：
+#
+#   CSI_CHANNEL="2462 20" CAM_HOST=node3 \
+#   LOCAL_VOICE_PROTOCOL=action_5_20_10 LOCAL_VOICE_ACTION=auto \
+#   ./csi_lab.sh batch batch_eq4m_midpoint_topup.txt
+#
+# 09-02 两次教训（同一类错误，都是漏环境变量）：
+#   1. 漏 CSI_CHANNEL -> 默认 2412（信道1），与 09-01 的 2462 不可比，4 条作废
+#   2. 漏 LOCAL_VOICE_PROTOCOL -> 默认 none，语音不播，参与者听不到提示，
+#      9 条全采成空场（事件段 0.22-2.29%，有人应约 18%），已删除
+# 判定依据：trial 目录内 experiment.txt 的 local_voice_protocol 必须是
+#   action_5_20_10，不能是 none。起批后第一条采完应立即核对。
+#
+# 中点重复补齐（M1/M3 配对交替，非随机序）。
+#
+# 目的：现有 posM1/posM3 的 motion 各 n=1、static 各 n=2，而文档中
+# 「M1→node1 26.14% / M3→node3 24.33%、不对称 1.07x」这一结论正是
+# 建立在 n=1 的 motion 上。本批把四个条件都补到 n=6。
+#
+# 设计说明：本批的被估量是 M1 与 M3 之间的「差」，因此刻意采用严格
+# 配对交替而非随机序 —— 会话内的任何漂移（温度、人员活动、AGC 状态）
+# 都会同等地作用在配对的两条上，不会伪装成不对称。
+# 副作用：可在任意「配对边界」停止，设计仍然平衡。
+#
+#
+# 会话性质（务必据实记录，论文中两种重复性不可混算）：
+#   首轮 M1/M3 六条采于 2026-09-01 约 19:3x-19:46。
+#   本批采于 2026-09-02 —— 跨日、跨射频会话（节点未重启，但批次间
+#   执行过 restore，AGC 与信道初始化状态不延续）。
+#   前提：物理布局自首轮后完全未动（4m 等边三角形、相机固定于 node3、
+#   M1/M3 地面标记原位），受试者同一人。
+#
+#   因此本批具有双重用途：
+#   (a) 重复次数补齐 —— 与首轮合并计 n=6，得到的离散度是跨日的保守估计；
+#   (b) 跨会话迁移测试 —— 按日切分，检验第一天学到的判别阈值直接用于
+#       第二天时准确率下降多少。这是任何后处理都产生不了的能力边界结果。
+#   分析时两种切法都要做，不可只报其一。
+#
+# 标记：M1 = (-1.000, -0.577) node2-node1 链路中点，垂距 0，距 node1 2.00 m
+#       M3 = (+1.000, -0.577) node2-node3 链路中点，垂距 0，距 node3 2.00 m
+# 协议：5 s 空场，进场，13 s 计分事件(8-21 s)，22 s 离场，再空场。
+# trial名                秒数
+eq4m_posM1_motion_r2     35
+eq4m_posM3_motion_r2     35
+eq4m_posM1_static_r3     35
+eq4m_posM3_static_r3     35
+eq4m_posM1_motion_r3     35
+eq4m_posM3_motion_r3     35
+eq4m_posM1_static_r4     35
+eq4m_posM3_static_r4     35
+eq4m_posM1_motion_r4     35
+eq4m_posM3_motion_r4     35
+eq4m_posM1_static_r5     35
+eq4m_posM3_static_r5     35
+eq4m_posM1_motion_r5     35
+eq4m_posM3_motion_r5     35
+eq4m_posM1_static_r6     35
+eq4m_posM3_static_r6     35
+eq4m_posM1_motion_r6     35
+eq4m_posM3_motion_r6     35

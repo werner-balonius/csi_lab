@@ -1,0 +1,11 @@
+# ⚠ 必须显式指定信道：CSI_CHANNEL="2462 20"
+#   csi_lab.sh:38 的默认值是 2412（信道 1，2.4GHz 最拥挤）。
+#   2026-09-02 首次门控因漏掉该变量跑在 2412 上，node1 空场差异 2.577%
+#   未通过，且与 09-01 的 2462 数据完全不可比，该批已作废。
+#   运行：CSI_CHANNEL="2462 20" CAM_HOST=node3 ./csi_lab.sh batch <本文件>
+#
+# 中点重复补齐 —— 同会话空场门控。
+# 第一条仅作射频预热，比较其后的两条空场。
+# trial名                              秒数  重复
+eq4m_midpoint_rf_warmup_same_session   20    1
+eq4m_midpoint_baseline_same_session    20    2
